@@ -4,36 +4,186 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Activación de cuenta | IMCUBA 2027</title>
+  <title>Activar cuenta | IMCUBA 2027</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       display: grid;
       place-items: center;
+      padding: 20px;
       background: #102c4b;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
     }
-    .panel {
-      margin: 20px;
-      padding: 35px;
-      max-width: 450px;
+    main {
+      width: 100%;
+      max-width: 430px;
+      padding: 30px;
       background: #1c4265;
       border-radius: 18px;
+      text-align: center;
     }
     h1 { color: #e8c56b; }
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      text-align: left;
+    }
+    input, button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+    input { border: 1px solid #aaa; }
+    button {
+      margin-top: 20px;
+      border: 0;
+      background: #e8c56b;
+      color: #102c4b;
+      font-weight: bold;
+    }
+    button:disabled { opacity: .5; }
+    #estado { line-height: 1.5; }
+    #formulario { display: none; }
   </style>
 </head>
 <body>
-  <main class="panel">
+  <main>
     <h1>IMCUBA Notas 2027</h1>
     <h2>Activación de cuenta docente</h2>
-    <p>Estamos preparando el acceso seguro
-       para los profesores de IMCUBA.</p>
-    <p>La activación de cuentas todavía
-       no está disponible.</p>
+
+    <p id="estado">Verificando invitación...</p>
+
+    <form id="formulario">
+      <label for="clave">Nueva contraseña</label>
+      <input id="clave" type="password"
+        minlength="12" autocomplete="new-password"
+        required>
+
+      <label for="confirmar">Confirmar contraseña</label>
+      <input id="confirmar" type="password"
+        minlength="12" autocomplete="new-password"
+        required>
+
+      <button id="guardar" type="submit">
+        Activar mi cuenta
+      </button>
+    </form>
   </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://cwbjfsnqghlpbegdesuy.supabase.co",
+      "sb_publishable_nsrJRjcBcLOnKU-rZneE5Q_n86nSsT4",
+      {
+        auth: {
+          detectSessionInUrl: true,
+          persistSession: false,
+          autoRefreshToken: false
+        }
+      }
+    );
+
+    const estado = document.getElementById("estado");
+    const formulario = document.getElementById("formulario");
+    const guardar = document.getElementById("guardar");
+
+    function mostrarSesion(session) {
+      if (session?.user) {
+        estado.textContent =
+          "Enlace verificado. Establece tu contraseña.";
+        formulario.style.display = "block";
+      } else {
+        estado.textContent =
+          "Abre esta página desde una invitación válida " +
+          "enviada por la Dirección.";
+        formulario.style.display = "none";
+      }
+    }
+
+    async function iniciar() {
+      try {
+        const parametros = new URLSearchParams(
+          window.location.search
+        );
+
+        const tokenHash = parametros.get("token_hash");
+        const tipo = parametros.get("type");
+
+        if (tokenHash && tipo === "invite") {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: "invite"
+          });
+
+          if (error) throw error;
+
+          window.history.replaceState(
+            {}, "", window.location.pathname
+          );
+        }
+
+        const { data, error } =
+          await supabase.auth.getSession();
+
+        if (error) throw error;
+        mostrarSesion(data.session);
+      } catch {
+        estado.textContent =
+          "No se pudo verificar la invitación. " +
+          "Solicita un enlace nuevo a Dirección.";
+        formulario.style.display = "none";
+      }
+    }
+
+    formulario.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+
+      const clave = document.getElementById("clave").value;
+      const confirmar =
+        document.getElementById("confirmar").value;
+
+      if (clave.length < 12) {
+        estado.textContent =
+          "La contraseña debe tener al menos 12 caracteres.";
+        return;
+      }
+
+      if (clave !== confirmar) {
+        estado.textContent =
+          "Las contraseñas no coinciden.";
+        return;
+      }
+
+      guardar.disabled = true;
+      estado.textContent = "Guardando contraseña...";
+
+      const { error } = await supabase.auth.updateUser({
+        password: clave
+      });
+
+      if (error) {
+        estado.textContent =
+          "No se pudo guardar la contraseña. Inténtalo de nuevo.";
+        guardar.disabled = false;
+        return;
+      }
+
+      formulario.style.display = "none";
+      estado.textContent =
+        "Contraseña establecida correctamente. " +
+        "Tu cuenta está lista para iniciar sesión.";
+
+      await supabase.auth.signOut();
+    });
+
+    iniciar();
+  </script>
 </body>
 </html>

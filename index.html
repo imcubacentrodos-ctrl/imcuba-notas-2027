@@ -17,25 +17,25 @@
 <body>
   <main class="panel">
     <h1>IMCUBA Notas 2027</h1>
-    <p class="muted">Instituto de Educación Básica por Cooperativa<br>Centro No. Dos, Parcelamiento La Máquina</p>
+    <p class="muted">Instituto de Educaci&oacute;n B&aacute;sica por Cooperativa<br>Centro No. Dos, Parcelamiento La M&aacute;quina</p>
     <hr>
     <section id="login">
-      <h2>Iniciar sesión</h2>
+      <h2>Iniciar sesi&oacute;n</h2>
       <form id="loginForm">
-        <label for="email">Correo electrónico</label>
+        <label for="email">Correo electr&oacute;nico</label>
         <input id="email" type="email" autocomplete="username" required>
-        <label for="password">Contraseña</label>
+        <label for="password">Contrase&ntilde;a</label>
         <input id="password" type="password" autocomplete="current-password" required>
         <button id="loginBtn" type="submit">Ingresar</button>
       </form>
-      <p class="muted">Las cuentas son autorizadas por Dirección.</p>
+      <p class="muted">Las cuentas son autorizadas por Direcci&oacute;n.</p>
     </section>
     <section id="welcome" class="hidden">
       <h2>Acceso verificado</h2>
       <p id="userName"></p>
       <p id="userRole"></p>
-      <p class="muted">Los módulos académicos y los permisos por curso están en desarrollo.</p>
-      <button id="logoutBtn" type="button">Cerrar sesión</button>
+      <p class="muted">Los m&oacute;dulos acad&eacute;micos y los permisos por curso est&aacute;n en desarrollo.</p>
+      <button id="salir" type="button">Cerrar sesi&oacute;n</button>
     </section>
     <p id="message" class="message" role="status" aria-live="polite"></p>
   </main>
@@ -58,37 +58,36 @@
       if (profileError || !profile || profile.activo !== true || !['director','docente'].includes(profile.rol)) {
         await client.auth.signOut();
         showLogin();
-        showMessage('Esta cuenta no tiene un perfil activo y autorizado. Consulta a Direcci贸n.');
+        showMessage('Esta cuenta no tiene un perfil activo y autorizado. Consulta a Direcci\u00f3n.');
         return;
       }
       document.getElementById('userName').textContent = profile.nombre_completo || 'Usuario';
-      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direcci贸n' : 'Rol: Docente';
+      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direcci\u00f3n' : 'Rol: Docente';
       login.classList.add('hidden'); welcome.classList.remove('hidden');
-      showMessage('Sesi贸n iniciada correctamente.');
+      showMessage('Sesi\u00f3n iniciada correctamente.');
     }
     async function initialize() {
-      if (!window.supabase) { showMessage('No se pudo cargar la conexi贸n. Revisa tu Internet y recarga.'); return; }
+      if (!window.supabase) { showMessage('No se pudo cargar la conexi\u00f3n. Revisa tu Internet y recarga.'); return; }
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
-      try { await loadProfile(); } catch { showMessage('No fue posible verificar la sesi贸n. Intenta nuevamente.'); }
+      try { await loadProfile(); } catch { showMessage('No fue posible verificar la sesi\u00f3n. Intenta nuevamente.'); }
     }
     document.getElementById('loginForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!client) { showMessage('Conexi贸n no disponible. Recarga la p谩gina.'); return; }
-      loginBtn.disabled = true; showMessage('Verificando credenciales...');
-      try {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const { error } = await client.auth.signInWithPassword({ email, password });
-        document.getElementById('password').value = '';
-        if (error) { showMessage('No se pudo iniciar sesi贸n. Verifica el correo y la contrase帽a.'); return; }
-        await loadProfile();
-      } catch { showMessage('Ocurri贸 un problema de conexi贸n. Intenta nuevamente.'); }
-      finally { loginBtn.disabled = false; }
-    });
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      if (client) await client.auth.signOut();
-      showLogin(); showMessage('Sesi贸n cerrada.');
-    });
+  event.preventDefault();
+  if (!client) { showMessage('Conexi\u00f3n no disponible. Recarga la p\u00e1gina.'); return; }
+  loginBtn.disabled = true; showMessage('Verificando credenciales...');
+  try {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    if (error) { showMessage('No se pudo iniciar sesi\u00f3n. Verifica el correo y la contrase\u00f1a.'); return; }
+    await loadProfile();
+  } catch { showMessage('Ocurri\u00f3 un problema de conexi\u00f3n. Intenta nuevamente.'); }
+  finally { loginBtn.disabled = false; }
+});
+document.getElementById('salir').addEventListener('click', async () => {
+  if (client) await client.auth.signOut();
+  showLogin(); showMessage('Sesi\u00f3n cerrada.');
+});
     initialize();
   </script>
 </body>

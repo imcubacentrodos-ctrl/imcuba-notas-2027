@@ -1,39 +1,95 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IMCUBA Notas 2027</title>
+  <title>IMCUBA Notas 2027 | Acceso</title>
   <style>
-    body {
-      margin: 0;
-      background: #102c4b;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 70px 20px;
-    }
-    h1 { color: #e8c56b; }
-    .panel {
-      max-width: 500px;
-      margin: auto;
-      padding: 30px;
-      background: #1c4265;
-      border-radius: 18px;
-    }
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#102c4b;color:#fff;font-family:Arial,sans-serif;display:grid;place-items:center;padding:22px}
+    .panel{width:min(100%,470px);background:#1c4265;border-radius:20px;padding:34px 26px;text-align:center;box-shadow:0 16px 36px #071a2d55}
+    h1{color:#e8c56b;font-size:clamp(28px,7vw,40px);margin:0 0 10px}h2{font-size:23px;margin:14px 0 24px}p{line-height:1.5}
+    label{display:block;text-align:left;margin:15px 0 7px}input{width:100%;padding:14px;border-radius:10px;border:1px solid #b9c8d5;font-size:16px}
+    button{width:100%;margin-top:20px;background:#e8c56b;color:#102c4b;border:0;border-radius:10px;padding:15px;font-size:17px;font-weight:bold;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}.muted{color:#d4e0e9;font-size:14px}.message{min-height:24px;margin-top:18px;overflow-wrap:anywhere}
+    .hidden{display:none}hr{border:0;border-top:1px solid #a9bfd0;margin:22px 0}
   </style>
 </head>
 <body>
-  <div class="panel">
+  <main class="panel">
     <h1>IMCUBA Notas 2027</h1>
-    <h2>Plataforma de Gestión Académica</h2>
-    <p>Instituto de Educación Básica por Cooperativa</p>
-    <p>Centro No. Dos, Parcelamiento La Máquina</p>
-    <p>San Andrés Villa Seca, Retalhuleu</p>
+    <p class="muted">Instituto de Educaci贸n B谩sica por Cooperativa<br>Centro No. Dos, Parcelamiento La M谩quina</p>
     <hr>
-    <p>Plataforma en desarrollo</p>
-    <p>Próximamente: acceso de Dirección y docentes.</p>
-  </div>
+    <section id="login">
+      <h2>Iniciar sesi贸n</h2>
+      <form id="loginForm">
+        <label for="email">Correo electr贸nico</label>
+        <input id="email" type="email" autocomplete="username" required>
+        <label for="password">Contrase帽a</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button id="loginBtn" type="submit">Ingresar</button>
+      </form>
+      <p class="muted">Las cuentas son autorizadas por Direcci贸n.</p>
+    </section>
+    <section id="welcome" class="hidden">
+      <h2>Acceso verificado</h2>
+      <p id="userName"></p>
+      <p id="userRole"></p>
+      <p class="muted">Los m贸dulos acad茅micos y los permisos por curso est谩n en desarrollo.</p>
+      <button id="logoutBtn" type="button">Cerrar sesi贸n</button>
+    </section>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://cwbjfsnqghlpbegdesuy.supabase.co';
+    const SUPABASE_PUBLIC_KEY = 'sb_publishable_nsrJRjcBcLOnKU-rZneE5Q_n86nSsT4';
+    const message = document.getElementById('message');
+    const login = document.getElementById('login');
+    const welcome = document.getElementById('welcome');
+    const loginBtn = document.getElementById('loginBtn');
+    let client;
+    function showMessage(value) { message.textContent = value; }
+    function showLogin() { login.classList.remove('hidden'); welcome.classList.add('hidden'); }
+    async function loadProfile() {
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError || !userData.user) { showLogin(); return; }
+      const { data: profile, error: profileError } = await client.from('perfiles')
+        .select('nombre_completo, rol, activo').eq('id', userData.user.id).single();
+      if (profileError || !profile || profile.activo !== true || !['director','docente'].includes(profile.rol)) {
+        await client.auth.signOut();
+        showLogin();
+        showMessage('Esta cuenta no tiene un perfil activo y autorizado. Consulta a Direcci贸n.');
+        return;
+      }
+      document.getElementById('userName').textContent = profile.nombre_completo || 'Usuario';
+      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direcci贸n' : 'Rol: Docente';
+      login.classList.add('hidden'); welcome.classList.remove('hidden');
+      showMessage('Sesi贸n iniciada correctamente.');
+    }
+    async function initialize() {
+      if (!window.supabase) { showMessage('No se pudo cargar la conexi贸n. Revisa tu Internet y recarga.'); return; }
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+      try { await loadProfile(); } catch { showMessage('No fue posible verificar la sesi贸n. Intenta nuevamente.'); }
+    }
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!client) { showMessage('Conexi贸n no disponible. Recarga la p谩gina.'); return; }
+      loginBtn.disabled = true; showMessage('Verificando credenciales...');
+      try {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        document.getElementById('password').value = '';
+        if (error) { showMessage('No se pudo iniciar sesi贸n. Verifica el correo y la contrase帽a.'); return; }
+        await loadProfile();
+      } catch { showMessage('Ocurri贸 un problema de conexi贸n. Intenta nuevamente.'); }
+      finally { loginBtn.disabled = false; }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      if (client) await client.auth.signOut();
+      showLogin(); showMessage('Sesi贸n cerrada.');
+    });
+    initialize();
+  </script>
 </body>
 </html>

@@ -31,9 +31,16 @@
       <p class="muted">Las cuentas son autorizadas por Direcci&oacute;n.</p>
     </section>
     <section id="welcome" class="hidden">
-      <h2>Acceso verificado</h2>
+      <h2>Panel de Control</h2>
       <p id="userName"></p>
       <p id="userRole"></p>
+     <div id="directorPanel" class="hidden">
+  <h3>Administracion Academica</h3>
+  <button type="button">Docentes</button>
+  <button type="button">Grados y Secciones</button>
+  <button type="button">Cursos</button>
+  <button type="button">Asignaciones</button>
+</div>
       <p class="muted">Los m&oacute;dulos acad&eacute;micos y los permisos por curso est&aacute;n en desarrollo.</p>
       <button id="salir" type="button">Cerrar sesi&oacute;n</button>
     </section>
@@ -63,6 +70,7 @@
       }
       document.getElementById('userName').textContent = profile.nombre_completo || 'Usuario';
       document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direccion' : 'Rol: Docente';
+      document.getElementById('directorPanel').classList.toggle('hidden', profile.rol !== 'director');
       login.classList.add('hidden'); welcome.classList.remove('hidden');
       showMessage('Inicio de sesion correcto.');
     }

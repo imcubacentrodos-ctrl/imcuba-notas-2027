@@ -62,9 +62,9 @@
         return;
       }
       document.getElementById('userName').textContent = profile.nombre_completo || 'Usuario';
-      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direcci\u00f3n' : 'Rol: Docente';
+      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direccion' : 'Rol: Docente';
       login.classList.add('hidden'); welcome.classList.remove('hidden');
-      showMessage('Sesi\u00f3n iniciada correctamente.');
+      showMessage('Inicio de sesion correcto.');
     }
     async function initialize() {
       if (!window.supabase) { showMessage('No se pudo cargar la conexi\u00f3n. Revisa tu Internet y recarga.'); return; }

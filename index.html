@@ -1,260 +1,600 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IMCUBA Notas 2027 | Acceso</title>
+
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#102c4b;color:#fff;font-family:Arial,sans-serif;display:grid;place-items:center;padding:22px}
-    .panel{width:min(100%,470px);background:#1c4265;border-radius:20px;padding:34px 26px;text-align:center;box-shadow:0 16px 36px #071a2d55}
-    h1{color:#e8c56b;font-size:clamp(28px,7vw,40px);margin:0 0 10px}h2{font-size:23px;margin:14px 0 24px}p{line-height:1.5}
-    label{display:block;text-align:left;margin:15px 0 7px}input{width:100%;padding:14px;border-radius:10px;border:1px solid #b9c8d5;font-size:16px}
-    button{width:100%;margin-top:20px;background:#e8c56b;color:#102c4b;border:0;border-radius:10px;padding:15px;font-size:17px;font-weight:bold;cursor:pointer}
-    button:disabled{opacity:.6;cursor:wait}.muted{color:#d4e0e9;font-size:14px}.message{min-height:24px;margin-top:18px;overflow-wrap:anywhere}
-    .hidden{display:none}hr{border:0;border-top:1px solid #a9bfd0;margin:22px 0}
-    
-select {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #b9c8d5;
-  background: #ffffff;
-  color: #102c4b;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-#moduloAsignaciones {
-  margin-top: 24px;
-  text-align: left;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #102c4b;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
 
-#moduloAsignaciones h3 {
-  color: #e8c56b;
-  text-align: center;
-}
+    .panel {
+      width: min(100%, 470px);
+      background: #1c4265;
+      border-radius: 20px;
+      padding: 34px 26px;
+      text-align: center;
+      box-shadow: 0 16px 36px #071a2d55;
+    }
 
-#moduloAsignaciones .muted {
-  text-align: center;
-}
+    h1 {
+      color: #e8c56b;
+      font-size: clamp(28px, 7vw, 40px);
+      margin: 0 0 10px;
+    }
 
+    h2 {
+      font-size: 23px;
+      margin: 14px 0 24px;
+    }
+
+    h3 {
+      margin-top: 24px;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 15px 0 7px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #b9c8d5;
+      background: #fff;
+      color: #102c4b;
+      font-size: 16px;
+    }
+
+    select {
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      background: #e8c56b;
+      color: #102c4b;
+      border: 0;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: #d4e0e9;
+      font-size: 14px;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #a9bfd0;
+      margin: 22px 0;
+    }
+
+    #moduloAsignaciones {
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    #moduloAsignaciones h3 {
+      color: #e8c56b;
+      text-align: center;
+    }
+
+    #moduloAsignaciones .muted {
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
   <main class="panel">
+
     <h1>IMCUBA Notas 2027</h1>
-    <p class="muted">Instituto de Educaci&oacute;n B&aacute;sica por Cooperativa<br>Centro No. Dos, Parcelamiento La M&aacute;quina</p>
+
+    <p class="muted">
+      Instituto de Educación Básica por Cooperativa
+      <br>
+      Centro No. Dos, Parcelamiento La Máquina
+    </p>
+
     <hr>
+
+    <!-- INICIO DE SESIÓN -->
     <section id="login">
-      <h2>Iniciar sesi&oacute;n</h2>
+      <h2>Iniciar sesión</h2>
+
       <form id="loginForm">
-        <label for="email">Correo electr&oacute;nico</label>
-        <input id="email" type="email" autocomplete="username" required>
-        <label for="password">Contrase&ntilde;a</label>
-        <input id="password" type="password" autocomplete="current-password" required>
-        <button id="loginBtn" type="submit">Ingresar</button>
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required
+        >
+
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button id="loginBtn" type="submit">
+          Ingresar
+        </button>
       </form>
-      <p class="muted">Las cuentas son autorizadas por Direcci&oacute;n.</p>
+
+      <p class="muted">
+        Las cuentas son autorizadas por Dirección.
+      </p>
     </section>
+
+    <!-- PANEL PRINCIPAL -->
     <section id="welcome" class="hidden">
+
       <h2>Panel de Control</h2>
+
       <p id="userName"></p>
       <p id="userRole"></p>
-     <div id="directorPanel" class="hidden">
-  <h3>Administracion Academica</h3>
-  <button type="button">Docentes</button>
-  <button type="button">Grados y Secciones</button>
-  <button type="button">Cursos</button>
-  <button id="abrirAsignaciones" type="button">Asignaciones</button>
-</div>
-      
-<section id="moduloAsignaciones" class="hidden">
-  <hr>
-  <h3>Asignaciones Docentes</h3>
-  <p class="muted">
-    Administra los cursos y secciones asignados
-    a cada docente.
-  </p>
 
-  <label for="docenteAsignacion">Docente</label>
-  <select id="docenteAsignacion">
-    <option value="">Seleccionar docente</option>
-  </select>
+      <!-- OPCIONES EXCLUSIVAS DE DIRECCIÓN -->
+      <div id="directorPanel" class="hidden">
 
-  <label for="cursoAsignacion">Curso</label>
-  <select id="cursoAsignacion">
-    <option value="">Seleccionar curso</option>
-  </select>
+        <h3>Administración Académica</h3>
 
-  <label for="seccionAsignacion">Grado y sección</label>
-  <select id="seccionAsignacion">
-    <option value="">Seleccionar sección</option>
-  </select>
+        <button type="button">Docentes</button>
+        <button type="button">Grados y Secciones</button>
+        <button type="button">Cursos</button>
 
-  <button id="guardarAsignacion" type="button">
-    Guardar asignación
-  </button>
-</section>
+        <button
+          id="abrirAsignaciones"
+          type="button"
+        >
+          Asignaciones
+        </button>
 
-      <p class="muted">Los m&oacute;dulos acad&eacute;micos y los permisos por curso est&aacute;n en desarrollo.</p>
-      <button id="salir" type="button">Cerrar sesi&oacute;n</button>
+      </div>
+
+      <!-- MÓDULO DE ASIGNACIONES -->
+      <section id="moduloAsignaciones" class="hidden">
+
+        <hr>
+
+        <h3>Asignaciones Docentes</h3>
+
+        <p class="muted">
+          Administra los cursos y secciones
+          asignados a cada docente.
+        </p>
+
+        <label for="docenteAsignacion">
+          Docente
+        </label>
+
+        <select id="docenteAsignacion">
+          <option value="">
+            Seleccionar docente
+          </option>
+        </select>
+
+        <label for="cursoAsignacion">
+          Curso
+        </label>
+
+        <select id="cursoAsignacion">
+          <option value="">
+            Seleccionar curso
+          </option>
+        </select>
+
+        <label for="seccionAsignacion">
+          Grado y sección
+        </label>
+
+        <select id="seccionAsignacion">
+          <option value="">
+            Seleccionar sección
+          </option>
+        </select>
+
+        <button
+          id="guardarAsignacion"
+          type="button"
+          disabled
+        >
+          Guardar asignación (próximamente)
+        </button>
+
+      </section>
+
+      <p class="muted">
+        Los demás módulos académicos
+        están en desarrollo.
+      </p>
+
+      <button id="salir" type="button">
+        Cerrar sesión
+      </button>
+
     </section>
-    <p id="message" class="message" role="status" aria-live="polite"></p>
+
+    <p
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+    ></p>
+
   </main>
+
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
   <script>
-    const SUPABASE_URL = 'https://cwbjfsnqghlpbegdesuy.supabase.co';
-    const SUPABASE_PUBLIC_KEY = 'sb_publishable_nsrJRjcBcLOnKU-rZneE5Q_n86nSsT4';
+    const SUPABASE_URL =
+      'https://cwbjfsnqghlpbegdesuy.supabase.co';
+
+    const SUPABASE_PUBLIC_KEY =
+      'sb_publishable_nsrJRjcBcLOnKU-rZneE5Q_n86nSsT4';
+
     const message = document.getElementById('message');
     const login = document.getElementById('login');
     const welcome = document.getElementById('welcome');
     const loginBtn = document.getElementById('loginBtn');
+    const directorPanel = document.getElementById('directorPanel');
+    const moduloAsignaciones =
+      document.getElementById('moduloAsignaciones');
+
     let client;
-    function showMessage(value) { message.textContent = value; }
-    function showLogin() { login.classList.remove('hidden'); welcome.classList.add('hidden'); }
+    let currentRole = null;
+
+    function showMessage(value) {
+      message.textContent = value;
+    }
+
+    function showLogin() {
+      currentRole = null;
+      login.classList.remove('hidden');
+      welcome.classList.add('hidden');
+      directorPanel.classList.add('hidden');
+      moduloAsignaciones.classList.add('hidden');
+    }
+
+    // VERIFICAR PERFIL
     async function loadProfile() {
-      const { data: userData, error: userError } = await client.auth.getUser();
-      if (userError || !userData.user) { showLogin(); return; }
-      const { data: profile, error: profileError } = await client.from('perfiles')
-        .select('nombre_completo, rol, activo').eq('id', userData.user.id).single();
-      if (profileError || !profile || profile.activo !== true || !['director','docente'].includes(profile.rol)) {
-        await client.auth.signOut();
+      const { data: userData, error: userError } =
+        await client.auth.getUser();
+
+      if (userError || !userData.user) {
         showLogin();
-        showMessage('Esta cuenta no tiene un perfil activo y autorizado. Consulta a Direcci\u00f3n.');
         return;
       }
-      document.getElementById('userName').textContent = profile.nombre_completo || 'Usuario';
-      document.getElementById('userRole').textContent = profile.rol === 'director' ? 'Rol: Direccion' : 'Rol: Docente';
-      document.getElementById('directorPanel').classList.toggle('hidden', profile.rol !== 'director');
-      login.classList.add('hidden'); welcome.classList.remove('hidden');
-      showMessage('Inicio de sesion correcto.');
+
+      const { data: profile, error: profileError } =
+        await client
+          .from('perfiles')
+          .select('nombre_completo, rol, activo')
+          .eq('id', userData.user.id)
+          .single();
+
+      if (
+        profileError ||
+        !profile ||
+        profile.activo !== true ||
+        !['director', 'docente'].includes(profile.rol)
+      ) {
+        await client.auth.signOut();
+        showLogin();
+
+        showMessage(
+          'Esta cuenta no tiene un perfil activo y autorizado. Consulta a Dirección.'
+        );
+
+        return;
+      }
+
+      currentRole = profile.rol;
+
+      document.getElementById('userName').textContent =
+        profile.nombre_completo || 'Usuario';
+
+      document.getElementById('userRole').textContent =
+        currentRole === 'director'
+          ? 'Rol: Dirección'
+          : 'Rol: Docente';
+
+      directorPanel.classList.toggle(
+        'hidden',
+        currentRole !== 'director'
+      );
+
+      moduloAsignaciones.classList.add('hidden');
+
+      login.classList.add('hidden');
+      welcome.classList.remove('hidden');
+
+      showMessage('Inicio de sesión correcto.');
     }
+
+    // CARGAR DOCENTES
+    async function cargarDocentes() {
+      const selector =
+        document.getElementById('docenteAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar docente</option>';
+
+      const { data, error } = await client
+        .from('perfiles')
+        .select('id, nombre_completo, nombre_usuario')
+        .eq('rol', 'docente')
+        .eq('activo', true)
+        .order('nombre_usuario');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar los docentes: ' +
+          error.message
+        );
+      }
+
+      for (const docente of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = docente.id;
+        opcion.textContent =
+          docente.nombre_completo ||
+          docente.nombre_usuario;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // CARGAR CURSOS
+    async function cargarCursos() {
+      const selector =
+        document.getElementById('cursoAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar curso</option>';
+
+      const { data, error } = await client
+        .from('cursos')
+        .select('id, nombre')
+        .eq('activo', true)
+        .order('nombre');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar los cursos: ' +
+          error.message
+        );
+      }
+
+      for (const curso of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = curso.id;
+        opcion.textContent = curso.nombre;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // CARGAR GRADOS Y SECCIONES
+    async function cargarSecciones() {
+      const selector =
+        document.getElementById('seccionAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar sección</option>';
+
+      const { data, error } = await client
+        .from('secciones')
+        .select('id, grado, seccion')
+        .eq('ciclo_escolar', 2027)
+        .order('grado')
+        .order('seccion');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar las secciones: ' +
+          error.message
+        );
+      }
+
+      for (const seccion of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = seccion.id;
+
+        opcion.textContent =
+          seccion.grado +
+          'º Básico - Sección ' +
+          seccion.seccion;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // ABRIR O CERRAR ASIGNACIONES
+    document.getElementById('abrirAsignaciones')
+      .addEventListener('click', async () => {
+
+        if (currentRole !== 'director') {
+          showMessage(
+            'No tienes autorización para administrar asignaciones.'
+          );
+          return;
+        }
+
+        const estabaOculto =
+          moduloAsignaciones.classList.contains('hidden');
+
+        if (!estabaOculto) {
+          moduloAsignaciones.classList.add('hidden');
+          showMessage('');
+          return;
+        }
+
+        moduloAsignaciones.classList.remove('hidden');
+
+        showMessage('Cargando información académica...');
+
+        try {
+          await cargarDocentes();
+          await cargarCursos();
+          await cargarSecciones();
+
+          showMessage(
+            'Información académica cargada correctamente.'
+          );
+        } catch (error) {
+          console.error(
+            'Error al cargar asignaciones:',
+            error
+          );
+
+          showMessage(error.message);
+        }
+      });
+
+    // INICIAR SESIÓN
+    document.getElementById('loginForm')
+      .addEventListener('submit', async (event) => {
+
+        event.preventDefault();
+
+        if (!client) {
+          showMessage(
+            'Conexión no disponible. Recarga la página.'
+          );
+          return;
+        }
+
+        loginBtn.disabled = true;
+        showMessage('Verificando credenciales...');
+
+        try {
+          const email =
+            document.getElementById('email').value.trim();
+
+          const password =
+            document.getElementById('password').value;
+
+          const { error } =
+            await client.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if (error) {
+            showMessage(
+              'No se pudo iniciar sesión. Verifica el correo y la contraseña.'
+            );
+            return;
+          }
+
+          await loadProfile();
+
+        } catch (error) {
+          console.error('Error de inicio de sesión:', error);
+
+          showMessage(
+            'Ocurrió un problema de conexión. Intenta nuevamente.'
+          );
+        } finally {
+          loginBtn.disabled = false;
+        }
+      });
+
+    // CERRAR SESIÓN
+    document.getElementById('salir')
+      .addEventListener('click', async () => {
+
+        try {
+          if (client) {
+            await client.auth.signOut();
+          }
+
+          showLogin();
+          showMessage('Sesión cerrada.');
+
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+
+          showMessage(
+            'No se pudo cerrar la sesión. Intenta nuevamente.'
+          );
+        }
+      });
+
+    // INICIALIZAR APLICACIÓN
     async function initialize() {
-      if (!window.supabase) { showMessage('No se pudo cargar la conexi\u00f3n. Revisa tu Internet y recarga.'); return; }
-      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
-      try { await loadProfile(); } catch { showMessage('No fue posible verificar la sesi\u00f3n. Intenta nuevamente.'); }
+      if (!window.supabase) {
+        showMessage(
+          'No se pudo cargar Supabase. Revisa tu conexión a Internet.'
+        );
+        return;
+      }
+
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLIC_KEY
+      );
+
+      try {
+        await loadProfile();
+      } catch (error) {
+        console.error('Error al iniciar:', error);
+
+        showLogin();
+
+        showMessage(
+          'No fue posible verificar la sesión. Intenta nuevamente.'
+        );
+      }
     }
-    document.getElementById('loginForm').addEventListener('submit', async (event) => {
-  event.preventDefault();
-  if (!client) { showMessage('Conexi\u00f3n no disponible. Recarga la p\u00e1gina.'); return; }
-  loginBtn.disabled = true; showMessage('Verificando credenciales...');
-  try {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const { error } = await client.auth.signInWithPassword({ email, password });
-    if (error) { showMessage('No se pudo iniciar sesi\u00f3n. Verifica el correo y la contrase\u00f1a.'); return; }
-    await loadProfile();
-  } catch { showMessage('Ocurri\u00f3 un problema de conexi\u00f3n. Intenta nuevamente.'); }
-  finally { loginBtn.disabled = false; }
-});
-document.getElementById('salir').addEventListener('click', async () => {
-  if (client) await client.auth.signOut();
-  showLogin(); showMessage('Sesi\u00f3n cerrada.');
-});
-    
-document.getElementById('abrirAsignaciones')
-  .addEventListener('click', async () => {
-    const modulo = document.getElementById('moduloAsignaciones');
-
-    modulo.classList.toggle('hidden');
-
-  
-
-
-if (!modulo.classList.contains('hidden')) {
-  showMessage('Cargando información académica...');
-
-  await cargarDocentes();
-  await cargarCursos();
-  await cargarSecciones();
-
-  showMessage('Módulo de asignaciones docentes abierto.');
-} else {
-  showMessage('');
-});
-
-async function cargarDocentes() {
-  const selector = document.getElementById('docenteAsignacion');
-
-  selector.innerHTML =
-    '<option value="">Seleccionar docente</option>';
-
-  const { data, error } = await client
-    .from('perfiles')
-    .select('id, nombre_completo, nombre_usuario')
-    .eq('rol', 'docente')
-    .eq('activo', true)
-    .order('nombre_usuario');
-
-  if (error) {
-    showMessage('No se pudieron cargar los docentes.');
-    return;
-  }
-
-  for (const docente of data) {
-    const opcion = document.createElement('option');
-    opcion.value = docente.id;
-    opcion.textContent =
-      docente.nombre_completo ||
-      docente.nombre_usuario;
-
-    selector.appendChild(opcion);
-  }
-}
-
-async function cargarCursos() {
-  const selector = document.getElementById('cursoAsignacion');
-
-  selector.innerHTML =
-    '<option value="">Seleccionar curso</option>';
-
-  const { data, error } = await client
-    .from('cursos')
-    .select('id, nombre')
-    .eq('activo', true)
-    .order('nombre');
-
-  if (error) {
-    showMessage('No se pudieron cargar los cursos.');
-    return;
-  }
-
-  for (const curso of data || []) {
-    const opcion = document.createElement('option');
-    opcion.value = curso.id;
-    opcion.textContent = curso.nombre;
-    selector.appendChild(opcion);
-  }
-}
-
-async function cargarSecciones() {
-  const selector = document.getElementById('seccionAsignacion');
-
-  selector.innerHTML =
-    '<option value="">Seleccionar sección</option>';
-
-  const { data, error } = await client
-    .from('secciones')
-    .select('id, grado, seccion')
-    .eq('ciclo_escolar', 2027)
-    .order('grado')
-    .order('seccion');
-
-  if (error) {
-    showMessage('No se pudieron cargar los grados y secciones.');
-    return;
-  }
-
-  for (const seccion of data || []) {
-    const opcion = document.createElement('option');
-
-    opcion.value = seccion.id;
-    opcion.textContent =
-      seccion.grado + 'º Básico - Sección ' + seccion.seccion;
-
-    selector.appendChild(opcion);
-  }
-}
 
     initialize();
   </script>

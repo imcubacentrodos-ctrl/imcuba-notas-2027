@@ -632,6 +632,41 @@ for (const seccion of secciones || []) {
     (secciones || []).length;
 }
 }
+    
+document.getElementById('seccionEstudiantes').addEventListener('change', cargarEstudiantesSeccion);
+
+ // CARGAR ESTUDIANTES DE UNA SECCIÓN
+async function cargarEstudiantesSeccion() {
+  const selector = document.getElementById('seccionEstudiantes');
+  const contenedor = document.getElementById('listaEstudiantes');
+  const seccionId = selector.value;
+
+  if (!seccionId) {
+    contenedor.textContent =
+      'Selecciona una sección para consultar sus estudiantes.';
+    return;
+  }
+
+  contenedor.textContent = 'Cargando estudiantes...';
+
+  const { data: estudiantes, error } = await client
+    .from('estudiantes')
+    .select('id, codigo_personal, nombres, apellidos, estado')
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', 2027)
+    .order('apellidos', { ascending: true })
+    .order('nombres', { ascending: true });
+
+  if (error) {
+    contenedor.textContent =
+      'Error al consultar estudiantes: ' + error.message;
+    return;
+  }
+
+  contenedor.textContent =
+    'Estudiantes encontrados: ' + (estudiantes || []).length;
+}
+
     // CARGAR DOCENTES
     async function cargarDocentes() {
       const selector =

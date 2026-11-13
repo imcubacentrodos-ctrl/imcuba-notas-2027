@@ -237,13 +237,14 @@
           </option>
         </select>
 
-        <button
-          id="guardarAsignacion"
-          type="button"
-          disabled
-        >
-          Guardar asignación (próximamente)
-        </button>
+        
+<button
+  id="guardarAsignacion"
+  type="button"
+>
+  Guardar asignación
+</button>
+
 
       </section>
 
@@ -496,6 +497,75 @@
           );
 
           showMessage(error.message);
+        }
+      });
+
+    // GUARDAR ASIGNACIÓN DOCENTE
+    document.getElementById('guardarAsignacion')
+      .addEventListener('click', async () => {
+        if (!client || currentRole !== 'director') {
+          showMessage('Solo Dirección puede guardar asignaciones.');
+          return;
+        }
+
+        const docenteId =
+          document.getElementById('docenteAsignacion').value;
+        const cursoId =
+          document.getElementById('cursoAsignacion').value;
+        const seccionId =
+          document.getElementById('seccionAsignacion').value;
+
+        if (!docenteId || !cursoId || !seccionId) {
+          showMessage('Selecciona docente, curso y sección.');
+          return;
+        }
+
+        const boton =
+          document.getElementById('guardarAsignacion');
+
+        boton.disabled = true;
+        showMessage('Guardando asignación...');
+
+        try {
+          const { data: existente, error: consultaError } =
+            await client
+              .from('asignaciones_docentes')
+              .select('id')
+              .eq('docente_id', docenteId)
+              .eq('curso_id', Number(cursoId))
+              .eq('seccion_id', Number(seccionId))
+              .eq('ciclo_escolar', 2027)
+              .limit(1);
+
+          if (consultaError) throw consultaError;
+
+          if (existente && existente.length > 0) {
+            showMessage('Esta asignación ya está registrada.');
+            return;
+          }
+
+          const { error: guardarError } =
+            await client
+              .from('asignaciones_docentes')
+              .insert({
+                docente_id: docenteId,
+                curso_id: Number(cursoId),
+                seccion_id: Number(seccionId),
+                ciclo_escolar: 2027
+              });
+
+          if (guardarError) throw guardarError;
+
+          showMessage('Asignación guardada correctamente.');
+
+        } catch (error) {
+          console.error('Error al guardar asignación:', error);
+          showMessage(
+            'No se pudo guardar la asignación: ' +
+            error.message
+          );
+        } finally {
+          boton.disabled = false;
         }
       });
 

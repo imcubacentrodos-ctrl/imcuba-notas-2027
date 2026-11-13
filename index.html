@@ -663,8 +663,37 @@ async function cargarEstudiantesSeccion() {
     return;
   }
 
-  contenedor.textContent =
-    'Estudiantes encontrados: ' + (estudiantes || []).length;
+  
+contenedor.replaceChildren();
+
+const titulo = document.createElement('p');
+titulo.textContent =
+  'Estudiantes encontrados: ' + (estudiantes || []).length;
+contenedor.appendChild(titulo);
+
+for (const estudiante of estudiantes || []) {
+  const tarjeta = document.createElement('div');
+  tarjeta.style.padding = '12px';
+  tarjeta.style.marginTop = '10px';
+  tarjeta.style.background = '#102c4b';
+  tarjeta.style.borderRadius = '10px';
+  tarjeta.style.textAlign = 'left';
+
+  const nombre = document.createElement('strong');
+  nombre.textContent =
+    estudiante.apellidos + ', ' + estudiante.nombres;
+
+  const detalle = document.createElement('p');
+  detalle.className = 'muted';
+  detalle.textContent =
+    'Código: ' + (estudiante.codigo_personal || 'Sin código') +
+    ' | Estado: ' + (estudiante.estado || 'Sin estado');
+
+  tarjeta.appendChild(nombre);
+  tarjeta.appendChild(detalle);
+  contenedor.appendChild(tarjeta);
+}
+
 }
 
     // CARGAR DOCENTES

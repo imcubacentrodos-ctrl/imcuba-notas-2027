@@ -177,6 +177,24 @@
       <p id="userName"></p>
       <p id="userRole"></p>
 
+<!-- PANEL ACADÉMICO DEL DOCENTE -->
+<section id="panelDocente" class="hidden">
+  <hr>
+
+  <h3>Mis cursos asignados</h3>
+
+  <p class="muted">
+    Consulta las asignaturas, grados y secciones
+    autorizados por Dirección.
+  </p>
+
+  <div id="listaCursosDocente">
+    <p class="muted">
+      Cargando cursos asignados...
+    </p>
+  </div>
+</section>
+
       <!-- OPCIONES EXCLUSIVAS DE DIRECCIÓN -->
       <div id="directorPanel" class="hidden">
 
@@ -336,6 +354,13 @@
 
       currentRole = profile.rol;
 
+const panelDocente =
+  document.getElementById('panelDocente');
+
+panelDocente.classList.toggle(
+  'hidden',
+  currentRole !== 'docente'
+);
       document.getElementById('userName').textContent =
         profile.nombre_completo || 'Usuario';
 
@@ -355,6 +380,92 @@
       welcome.classList.remove('hidden');
 
       showMessage('Inicio de sesión correcto.');
+            if (currentRole === 'docente') {
+        await cargarCursosDocente();
+      }
+    }
+
+    // CARGAR CURSOS ASIGNADOS AL DOCENTE
+    async function cargarCursosDocente() {
+      const contenedor =
+        document.getElementById('listaCursosDocente');
+
+      contenedor.textContent = 'Cargando cursos asignados...';
+
+      try {
+        const { data: usuario, error: errorUsuario } =
+          await client.auth.getUser();
+
+        if (errorUsuario || !usuario.user) {
+          throw new Error('No se pudo identificar al docente.');
+        }
+
+        const { data, error } = await client
+          .from('asignaciones_docentes')
+          .select(`
+            id,
+            curso_id,
+            seccion_id,
+            cursos(nombre),
+            secciones(grado, seccion)
+          `)
+          .eq('docente_id', usuario.user.id)
+          .eq('ciclo_escolar', 2027);
+
+        if (error) throw error;
+
+        contenedor.replaceChildren();
+
+        if (!data || data.length === 0) {
+          contenedor.textContent =
+            'Todavía no tienes cursos asignados.';
+          return;
+        }
+
+        const asignaciones = [...data].sort((a, b) => {
+          const gradoA = Number(a.secciones?.grado || 0);
+          const gradoB = Number(b.secciones?.grado || 0);
+
+          return gradoA - gradoB ||
+            String(a.secciones?.seccion || '').localeCompare(
+              String(b.secciones?.seccion || '')
+            ) ||
+            String(a.cursos?.nombre || '').localeCompare(
+              String(b.cursos?.nombre || '')
+            );
+        });
+
+        for (const asignacion of asignaciones) {
+          const tarjeta = document.createElement('div');
+
+          tarjeta.style.padding = '15px';
+          tarjeta.style.marginTop = '12px';
+          tarjeta.style.background = '#102c4b';
+          tarjeta.style.borderRadius = '10px';
+          tarjeta.style.textAlign = 'left';
+
+          const titulo = document.createElement('strong');
+          titulo.textContent =
+            asignacion.cursos?.nombre || 'Curso sin nombre';
+
+          const detalle = document.createElement('p');
+          detalle.className = 'muted';
+          detalle.textContent =
+            (asignacion.secciones?.grado || '?') +
+            'º Básico - Sección ' +
+            (asignacion.secciones?.seccion || '?');
+
+          tarjeta.appendChild(titulo);
+          tarjeta.appendChild(detalle);
+          contenedor.appendChild(tarjeta);
+        }
+
+      } catch (error) {
+        console.error('Error al cargar cursos:', error);
+        contenedor.textContent =
+          'No se pudieron cargar los cursos: ' +
+          error.message;
+      }
     }
 
     // CARGAR DOCENTES

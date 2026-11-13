@@ -379,6 +379,16 @@ panelDocente.classList.toggle(
   'hidden',
   currentRole !== 'docente'
 );
+      
+const panelEstudiantes =
+    document.getElementById('panelEstudiantes');
+
+panelEstudiantes.classList.toggle(
+    'hidden',
+    currentRole !== 'director' &&
+    currentRole !== 'docente'
+);
+
       document.getElementById('userName').textContent =
         profile.nombre_completo || 'Usuario';
 

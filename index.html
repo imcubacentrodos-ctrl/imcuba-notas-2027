@@ -659,7 +659,33 @@ document.getElementById('seccionEstudiantes').addEventListener('change', cargarE
 async function cargarEstudiantesSeccion() {
   const selector = document.getElementById('seccionEstudiantes');
   const contenedor = document.getElementById('listaEstudiantes');
-  const seccionId = selector.value;
+  const seccionId = selector.value; 
+const formulario = document.getElementById('formularioEstudiante');
+formulario.classList.add('hidden');
+
+let puedeRegistrar = false;
+
+if (currentRole === 'director') {
+  puedeRegistrar = true;
+}
+
+if (currentRole === 'docente' && seccionId) {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_registrar')
+    .eq('docente_id', currentUser.id)
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', 2027)
+    .maybeSingle();
+
+  if (!errorPermiso && permiso?.puede_registrar === true) {
+    puedeRegistrar = true;
+  }
+}
+
+if (puedeRegistrar && seccionId) {
+  formulario.classList.remove('hidden');
+}
 
   if (!seccionId) {
     contenedor.textContent =

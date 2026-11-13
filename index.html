@@ -601,6 +601,25 @@ if (currentRole === 'director') {
     return;
   }
 
+  
+selector.replaceChildren();
+
+const opcionDireccion = document.createElement('option');
+opcionDireccion.value = '';
+opcionDireccion.textContent = 'Seleccionar sección';
+selector.appendChild(opcionDireccion);
+
+for (const seccion of secciones || []) {
+  const opcion = document.createElement('option');
+
+  opcion.value = seccion.id;
+  opcion.textContent =
+    seccion.grado + 'º Básico - Sección ' +
+    seccion.seccion;
+
+  selector.appendChild(opcion);
+}
+
   mensaje.textContent =
     'Secciones institucionales encontradas: ' +
     (secciones || []).length;

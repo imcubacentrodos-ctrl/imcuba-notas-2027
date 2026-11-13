@@ -543,7 +543,9 @@ if (currentRole === 'docente') {
 const { data: permisos, error: errorPermisos } =
   await client
     .from('permisos_estudiantes')
-    .select('seccion_id, ciclo_escolar, puede_consultar')
+   
+.select('seccion_id, ciclo_escolar, puede_consultar, secciones(grado, seccion)')
+
     .eq('docente_id', usuario.user.id)
     .eq('ciclo_escolar', 2027)
     .eq('puede_consultar', true);
@@ -554,9 +556,33 @@ if (errorPermisos) {
   return;
 }
 
+
+selector.replaceChildren();
+
+const opcionInicial = document.createElement('option');
+opcionInicial.value = '';
+opcionInicial.textContent = 'Seleccionar sección';
+selector.appendChild(opcionInicial);
+
+for (const permiso of permisos || []) {
+  const seccion = permiso.secciones;
+
+  if (!seccion) continue;
+
+  const opcion = document.createElement('option');
+  opcion.value = permiso.seccion_id;
+
+  opcion.textContent =
+    seccion.grado + 'º Básico - Sección ' +
+    seccion.seccion;
+
+  selector.appendChild(opcion);
+}
+
 mensaje.textContent =
   'Secciones autorizadas encontradas: ' +
   (permisos || []).length;
+
 }
 
 }

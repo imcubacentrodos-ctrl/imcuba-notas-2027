@@ -509,6 +509,54 @@ panelEstudiantes.classList.toggle(
       }
     }
 
+    // CARGAR SECCIONES PARA GESTIÓN DE ESTUDIANTES
+    async function cargarSeccionesEstudiantes() {
+      const selector =
+        document.getElementById('seccionEstudiantes');
+
+      const mensaje =
+        document.getElementById('mensajeEstudiantes');
+
+      selector.replaceChildren();
+
+      const opcionInicial = document.createElement('option');
+      opcionInicial.value = '';
+      opcionInicial.textContent = 'Cargando secciones...';
+      selector.appendChild(opcionInicial);
+
+      mensaje.textContent =
+        'Consultando las secciones autorizadas...';
+      
+if (currentRole === 'docente') {
+  const { data: usuario, error: errorUsuario } =
+    await client.auth.getUser();
+
+  if (errorUsuario || !usuario.user) {
+    mensaje.textContent =
+      'No se pudo identificar al docente.';
+    return;
+  }
+
+const { data: permisos, error: errorPermisos } =
+  await client
+    .from('permisos_estudiantes')
+    .select('seccion_id, ciclo_escolar, puede_consultar')
+    .eq('docente_id', usuario.user.id)
+    .eq('ciclo_escolar', 2027)
+    .eq('puede_consultar', true);
+
+if (errorPermisos) {
+  mensaje.textContent =
+    'Error al consultar permisos: ' + errorPermisos.message;
+  return;
+}
+
+mensaje.textContent =
+  'Secciones autorizadas encontradas: ' +
+  (permisos || []).length;
+}
+
+}
     // CARGAR DOCENTES
     async function cargarDocentes() {
       const selector =

@@ -12,6 +12,32 @@
     button{width:100%;margin-top:20px;background:#e8c56b;color:#102c4b;border:0;border-radius:10px;padding:15px;font-size:17px;font-weight:bold;cursor:pointer}
     button:disabled{opacity:.6;cursor:wait}.muted{color:#d4e0e9;font-size:14px}.message{min-height:24px;margin-top:18px;overflow-wrap:anywhere}
     .hidden{display:none}hr{border:0;border-top:1px solid #a9bfd0;margin:22px 0}
+    
+select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #b9c8d5;
+  background: #ffffff;
+  color: #102c4b;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+#moduloAsignaciones {
+  margin-top: 24px;
+  text-align: left;
+}
+
+#moduloAsignaciones h3 {
+  color: #e8c56b;
+  text-align: center;
+}
+
+#moduloAsignaciones .muted {
+  text-align: center;
+}
+
   </style>
 </head>
 <body>
@@ -39,8 +65,37 @@
   <button type="button">Docentes</button>
   <button type="button">Grados y Secciones</button>
   <button type="button">Cursos</button>
-  <button type="button">Asignaciones</button>
+  <button id="abrirAsignaciones" type="button">Asignaciones</button>
 </div>
+      
+<section id="moduloAsignaciones" class="hidden">
+  <hr>
+  <h3>Asignaciones Docentes</h3>
+  <p class="muted">
+    Administra los cursos y secciones asignados
+    a cada docente.
+  </p>
+
+  <label for="docenteAsignacion">Docente</label>
+  <select id="docenteAsignacion">
+    <option value="">Seleccionar docente</option>
+  </select>
+
+  <label for="cursoAsignacion">Curso</label>
+  <select id="cursoAsignacion">
+    <option value="">Seleccionar curso</option>
+  </select>
+
+  <label for="seccionAsignacion">Grado y sección</label>
+  <select id="seccionAsignacion">
+    <option value="">Seleccionar sección</option>
+  </select>
+
+  <button id="guardarAsignacion" type="button">
+    Guardar asignación
+  </button>
+</section>
+
       <p class="muted">Los m&oacute;dulos acad&eacute;micos y los permisos por curso est&aacute;n en desarrollo.</p>
       <button id="salir" type="button">Cerrar sesi&oacute;n</button>
     </section>
@@ -96,6 +151,111 @@ document.getElementById('salir').addEventListener('click', async () => {
   if (client) await client.auth.signOut();
   showLogin(); showMessage('Sesi\u00f3n cerrada.');
 });
+    
+document.getElementById('abrirAsignaciones')
+  .addEventListener('click', async () => {
+    const modulo = document.getElementById('moduloAsignaciones');
+
+    modulo.classList.toggle('hidden');
+
+  
+
+
+if (!modulo.classList.contains('hidden')) {
+  showMessage('Cargando información académica...');
+
+  await cargarDocentes();
+  await cargarCursos();
+  await cargarSecciones();
+
+  showMessage('Módulo de asignaciones docentes abierto.');
+} else {
+  showMessage('');
+});
+
+async function cargarDocentes() {
+  const selector = document.getElementById('docenteAsignacion');
+
+  selector.innerHTML =
+    '<option value="">Seleccionar docente</option>';
+
+  const { data, error } = await client
+    .from('perfiles')
+    .select('id, nombre_completo, nombre_usuario')
+    .eq('rol', 'docente')
+    .eq('activo', true)
+    .order('nombre_usuario');
+
+  if (error) {
+    showMessage('No se pudieron cargar los docentes.');
+    return;
+  }
+
+  for (const docente of data) {
+    const opcion = document.createElement('option');
+    opcion.value = docente.id;
+    opcion.textContent =
+      docente.nombre_completo ||
+      docente.nombre_usuario;
+
+    selector.appendChild(opcion);
+  }
+}
+
+async function cargarCursos() {
+  const selector = document.getElementById('cursoAsignacion');
+
+  selector.innerHTML =
+    '<option value="">Seleccionar curso</option>';
+
+  const { data, error } = await client
+    .from('cursos')
+    .select('id, nombre')
+    .eq('activo', true)
+    .order('nombre');
+
+  if (error) {
+    showMessage('No se pudieron cargar los cursos.');
+    return;
+  }
+
+  for (const curso of data || []) {
+    const opcion = document.createElement('option');
+    opcion.value = curso.id;
+    opcion.textContent = curso.nombre;
+    selector.appendChild(opcion);
+  }
+}
+
+async function cargarSecciones() {
+  const selector = document.getElementById('seccionAsignacion');
+
+  selector.innerHTML =
+    '<option value="">Seleccionar sección</option>';
+
+  const { data, error } = await client
+    .from('secciones')
+    .select('id, grado, seccion')
+    .eq('ciclo_escolar', 2027)
+    .order('grado')
+    .order('seccion');
+
+  if (error) {
+    showMessage('No se pudieron cargar los grados y secciones.');
+    return;
+  }
+
+  for (const seccion of data || []) {
+    const opcion = document.createElement('option');
+
+    opcion.value = seccion.id;
+    opcion.textContent =
+      seccion.grado + 'º Básico - Sección ' + seccion.seccion;
+
+    selector.appendChild(opcion);
+  }
+}
+
     initialize();
   </script>
 </body>

@@ -585,6 +585,26 @@ mensaje.textContent =
 
 }
 
+
+    
+if (currentRole === 'director') {
+  const { data: secciones, error } = await client
+    .from('secciones')
+    .select('id, grado, seccion')
+    .eq('ciclo_escolar', 2027)
+    .order('grado', { ascending: true })
+    .order('seccion', { ascending: true });
+
+  if (error) {
+    mensaje.textContent =
+      'Error al cargar secciones: ' + error.message;
+    return;
+  }
+
+  mensaje.textContent =
+    'Secciones institucionales encontradas: ' +
+    (secciones || []).length;
+}
 }
     // CARGAR DOCENTES
     async function cargarDocentes() {

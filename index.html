@@ -742,6 +742,88 @@ for (const estudiante of estudiantes || []) {
 
 }
 
+ // GUARDAR ESTUDIANTE
+async function guardarEstudiante() {
+  const codigo = document.getElementById('codigoEstudiante').value.trim();
+  const nombres = document.getElementById('nombresEstudiante').value.trim();
+  const apellidos = document.getElementById('apellidosEstudiante').value.trim();
+
+  const mensaje = document.getElementById('mensajeRegistroEstudiante');
+
+const seccionId = document.getElementById('seccionEstudiantes').value;
+
+if (!seccionId) {
+  mensaje.textContent = 'Selecciona una sección.';
+  return;
+}
+
+  if (!codigo || !nombres || !apellidos) {
+    mensaje.textContent = 'Completa todos los campos.';
+    return;
+  }
+
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  mensaje.textContent = 'Debes iniciar sesión para registrar estudiantes.';
+  return;
+}
+let autorizado = false;
+
+if (currentRole === 'director') {
+  autorizado = true;
+}
+
+if (currentRole === 'docente') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_registrar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', 2027)
+    .maybeSingle();
+
+  if (!errorPermiso && permiso?.puede_registrar === true) {
+    autorizado = true;
+  }
+}
+
+if (!autorizado) {
+  mensaje.textContent =
+    'No tienes autorización para registrar estudiantes en esta sección.';
+  return;
+}
+
+const { error: errorRegistro } = await client
+  .from('estudiantes')
+  .insert({
+    codigo_personal: codigo,
+    nombres: nombres,
+    apellidos: apellidos,
+    seccion_id: seccionId,
+    ciclo_escolar: 2027,
+    estado: 'inscrito'
+  });
+
+if (errorRegistro) {
+  mensaje.textContent =
+    'Error al registrar estudiante: ' + errorRegistro.message;
+  return;
+}
+
+mensaje.textContent = 'Estudiante registrado correctamente.';
+
+document.getElementById('codigoEstudiante').value = '';
+document.getElementById('nombresEstudiante').value = '';
+document.getElementById('apellidosEstudiante').value = '';
+
+await cargarEstudiantesSeccion();
+}
+
+document.getElementById('guardarEstudiante')
+  .addEventListener('click', guardarEstudiante);
+
     // CARGAR DOCENTES
     async function cargarDocentes() {
       const selector =

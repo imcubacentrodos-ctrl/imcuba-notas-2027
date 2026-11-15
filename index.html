@@ -808,9 +808,26 @@ tarjeta.appendChild(botonEditar);
   
 const botonEstado = document.createElement('button');
 botonEstado.textContent = 'Cambiar estado';
+
 botonEstado.addEventListener('click', () => {
-  alert('Estado actual: ' + estudiante.estado);
+  const nuevoEstado = prompt(
+    'Estado actual: ' + estudiante.estado +
+    '\nEscribe el nuevo estado: inscrito, retirado o trasladado',
+    estudiante.estado
+  );
+
+  if (nuevoEstado === null) return;
+
+  const estadoSeleccionado = nuevoEstado.trim().toLowerCase();
+
+  if (!['inscrito', 'retirado', 'trasladado'].includes(estadoSeleccionado)) {
+    alert('Estado no válido. Selecciona inscrito, retirado o trasladado.');
+    return;
+  }
+
+  alert('Estado seleccionado: ' + estadoSeleccionado);
 });
+
 tarjeta.appendChild(botonEstado);
 
   contenedor.appendChild(tarjeta);

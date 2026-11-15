@@ -850,7 +850,25 @@ if (currentRole !== 'director') {
     return;
   }
 
-  alert('Estado seleccionado: ' + estadoSeleccionado);
+  
+if (estadoSeleccionado === estudiante.estado) {
+  alert('El estudiante ya tiene ese estado.');
+  return;
+}
+
+const confirmarCambio = confirm(
+  '¿Confirmas cambiar el estado de ' +
+  estudiante.nombres + ' ' + estudiante.apellidos +
+  ' de "' + estudiante.estado +
+  '" a "' + estadoSeleccionado + '"?'
+);
+
+if (!confirmarCambio) {
+  return;
+}
+
+alert('Cambio confirmado. Pendiente de guardar en Supabase.');
+
 });
 
 tarjeta.appendChild(botonEstado);

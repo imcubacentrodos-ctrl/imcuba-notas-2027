@@ -809,7 +809,32 @@ tarjeta.appendChild(botonEditar);
 const botonEstado = document.createElement('button');
 botonEstado.textContent = 'Cambiar estado';
 
-botonEstado.addEventListener('click', () => {
+botonEstado.addEventListener('click', async () => {
+  
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  alert('Debes iniciar sesión para cambiar el estado de estudiantes.');
+  return;
+}
+
+if (currentRole !== 'director') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_retirar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', estudiante.seccion_id)
+    .eq('ciclo_escolar', 2027)
+    .eq('puede_retirar', true)
+    .maybeSingle();
+
+  if (errorPermiso || !permiso) {
+    alert('No tienes autorización para cambiar el estado de este estudiante.');
+    return;
+  }
+}
+
   const nuevoEstado = prompt(
     'Estado actual: ' + estudiante.estado +
     '\nEscribe el nuevo estado: inscrito, retirado o trasladado',

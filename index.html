@@ -697,7 +697,7 @@ if (puedeRegistrar && seccionId) {
 
   const { data: estudiantes, error } = await client
     .from('estudiantes')
-    .select('id, codigo_personal, nombres, apellidos, estado')
+    .select('id, codigo_personal, nombres, apellidos, estado, seccion_id')
     .eq('seccion_id', seccionId)
     .eq('ciclo_escolar', 2027)
     .order('apellidos', { ascending: true })
@@ -739,8 +739,65 @@ for (const estudiante of estudiantes || []) {
   tarjeta.appendChild(detalle);
   const botonEditar = document.createElement('button');
 botonEditar.textContent = 'Editar estudiante';
-  botonEditar.addEventListener('click', () => {
-  alert('Editar estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos);
+  botonEditar.addEventListener('click', async () => {
+    const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  alert('Debes iniciar sesión para editar estudiantes.');
+  return;
+}
+    if (currentRole !== 'director') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_modificar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', estudiante.seccion_id)
+    .eq('ciclo_escolar', 2027)
+    .eq('puede_modificar', true)
+    .maybeSingle();
+
+  if (errorPermiso || !permiso) {
+    alert('No tienes permiso para modificar este estudiante.');
+    return;
+  }
+}
+  const nuevosNombres = prompt(
+  'Editar nombres del estudiante:',
+  estudiante.nombres
+);
+    const nuevosApellidos = prompt(
+  'Editar apellidos del estudiante:',
+  estudiante.apellidos
+);
+if (
+  nuevosNombres === null ||
+  nuevosApellidos === null ||
+  !nuevosNombres.trim() ||
+  !nuevosApellidos.trim()
+) {
+  alert('Edición cancelada o datos incompletos.');
+  return;
+}
+  }
+ const { data: estudiantesEditados, error: errorEdicion } = await client
+  .from('estudiantes')
+  .update({
+    nombres: nuevosNombres.trim(),
+    apellidos: nuevosApellidos.trim()
+  })
+  .eq('id', estudiante.id)
+.select('id');
+  if (errorEdicion) {
+  alert('Error al editar estudiante: ' + errorEdicion.message);
+  return;
+}
+  if (!estudiantesEditados || estudiantesEditados.length !== 1) {
+  alert('No se pudo confirmar la actualización del estudiante.');
+  return;
+}
+  alert('Estudiante actualizado correctamente.');
+await cargarEstudiantesSeccion();
 });
 tarjeta.appendChild(botonEditar);
   contenedor.appendChild(tarjeta);

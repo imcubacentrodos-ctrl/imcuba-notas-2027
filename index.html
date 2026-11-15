@@ -739,6 +739,9 @@ for (const estudiante of estudiantes || []) {
   tarjeta.appendChild(detalle);
   const botonEditar = document.createElement('button');
 botonEditar.textContent = 'Editar estudiante';
+  botonEditar.addEventListener('click', () => {
+  alert('Editar estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos);
+});
 tarjeta.appendChild(botonEditar);
   contenedor.appendChild(tarjeta);
 }

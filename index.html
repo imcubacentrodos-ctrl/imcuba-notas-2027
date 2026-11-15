@@ -805,6 +805,14 @@ if (
 await cargarEstudiantesSeccion();
 });
 tarjeta.appendChild(botonEditar);
+  
+const botonEstado = document.createElement('button');
+botonEstado.textContent = 'Cambiar estado';
+botonEstado.addEventListener('click', () => {
+  alert('Estado actual: ' + estudiante.estado);
+});
+tarjeta.appendChild(botonEstado);
+
   contenedor.appendChild(tarjeta);
 }
 

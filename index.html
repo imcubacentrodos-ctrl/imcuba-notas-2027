@@ -664,7 +664,13 @@ const formulario = document.getElementById('formularioEstudiante');
 formulario.classList.add('hidden');
 
 let puedeRegistrar = false;
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
 
+if (errorUsuario || !user) {
+  contenedor.textContent = 'No se pudo verificar el usuario autenticado.';
+  return;
+}
 if (currentRole === 'director') {
   puedeRegistrar = true;
 }
@@ -673,7 +679,7 @@ if (currentRole === 'docente' && seccionId) {
   const { data: permiso, error: errorPermiso } = await client
     .from('permisos_estudiantes')
     .select('puede_registrar')
-    .eq('docente_id', currentUser.id)
+    .eq('docente_id', user.id)
     .eq('seccion_id', seccionId)
     .eq('ciclo_escolar', 2027)
     .maybeSingle();

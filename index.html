@@ -779,7 +779,6 @@ if (
   alert('Edición cancelada o datos incompletos.');
   return;
 }
-  }
  const { data: estudiantesEditados, error: errorEdicion } = await client
   .from('estudiantes')
   .update({

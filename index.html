@@ -287,9 +287,13 @@
     Consulta y administración de ciclos escolares.
   </p>
 
+<p id="indicadorCicloActivo">
+  Consultando ciclo institucional activo...
+</p>
+
 <div>
   <label for="selectorCicloEscolar">
-    Ciclo escolar de trabajo:
+  Ciclo escolar para consultar:
   </label>
 
   <select id="selectorCicloEscolar">
@@ -611,6 +615,21 @@ selectorCiclo.appendChild(opcionInicial);
 
     mensaje.textContent =
       'Ciclos escolares encontrados: ' + (ciclos || []).length;
+
+const indicadorActivo =
+  document.getElementById('indicadorCicloActivo');
+
+const cicloActivo = (ciclos || []).find(
+  ciclo => ciclo.estado === 'activo'
+);
+
+if (cicloActivo) {
+  indicadorActivo.textContent =
+    'Ciclo institucional activo: ' + cicloActivo.anio;
+} else {
+  indicadorActivo.textContent =
+    'No hay un ciclo institucional activo.';
+}
 
     for (const ciclo of ciclos || []) {
 const opcion = document.createElement('option');

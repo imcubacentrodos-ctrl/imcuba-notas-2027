@@ -999,13 +999,33 @@ if (!Number.isInteger(numeroOpcion) ||
 
 const seccionSeleccionada = opciones[numeroOpcion - 1];
 
-alert(
-  'Sección seleccionada correctamente:\n' +
-  seccionActual.grado + 'º Básico - Sección ' +
+
+const motivoIngresado = prompt(
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nDestino: ' + seccionActual.grado + 'º Básico - Sección ' +
   seccionSeleccionada.seccion +
-  '\n\nTodavía no se ha realizado ningún traslado.'
+  '\n\nEscribe el motivo del traslado:'
 );
 
+if (motivoIngresado === null) return;
+
+const motivoTraslado = motivoIngresado.trim();
+
+if (motivoTraslado.length < 10) {
+  alert('El motivo debe contener al menos 10 caracteres.');
+  return;
+}
+
+alert(
+  'Datos del traslado preparados:\n\n' +
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nOrigen: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionActual.seccion +
+  '\nDestino: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion +
+  '\nMotivo: ' + motivoTraslado +
+  '\n\nTodavía no se ha realizado ningún traslado.'
+);
 });
 
 

@@ -835,20 +835,29 @@ if (currentRole !== 'director') {
   }
 }
 
-  const nuevoEstado = prompt(
-    'Estado actual: ' + estudiante.estado +
-    '\nEscribe el nuevo estado: inscrito, retirado o trasladado',
-    estudiante.estado
-  );
+  
+const opcionesEstado = ['inscrito', 'retirado', 'trasladado'];
 
-  if (nuevoEstado === null) return;
+const nuevoEstado = prompt(
+  'Selecciona el nuevo estado:\n' +
+  '1. Inscrito\n' +
+  '2. Retirado\n' +
+  '3. Trasladado\n\n' +
+  'Escribe el número de la opción:',
+  '1'
+);
 
-  const estadoSeleccionado = nuevoEstado.trim().toLowerCase();
+if (nuevoEstado === null) return;
 
-  if (!['inscrito', 'retirado', 'trasladado'].includes(estadoSeleccionado)) {
-    alert('Estado no válido. Selecciona inscrito, retirado o trasladado.');
-    return;
-  }
+const numeroOpcion = Number(nuevoEstado.trim());
+
+if (![1, 2, 3].includes(numeroOpcion)) {
+  alert('Opción no válida. Selecciona 1, 2 o 3.');
+  return;
+}
+
+const estadoSeleccionado = opcionesEstado[numeroOpcion - 1];
+
 
   
 if (estadoSeleccionado === estudiante.estado) {

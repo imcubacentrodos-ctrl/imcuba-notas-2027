@@ -1016,18 +1016,25 @@ if (motivoTraslado.length < 10) {
   return;
 }
 
-alert(
-  'Datos del traslado preparados:\n\n' +
+
+const confirmarTraslado = confirm(
+  'CONFIRMAR CAMBIO DE SECCIÓN\n\n' +
   'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
   '\nOrigen: ' + seccionActual.grado + 'º Básico - Sección ' +
   seccionActual.seccion +
   '\nDestino: ' + seccionActual.grado + 'º Básico - Sección ' +
   seccionSeleccionada.seccion +
   '\nMotivo: ' + motivoTraslado +
-  '\n\nTodavía no se ha realizado ningún traslado.'
+  '\n\n¿Confirmas los datos de este traslado?'
+);
+
+if (!confirmarTraslado) return;
+
+alert(
+  'Confirmación recibida correctamente.\n' +
+  'El traslado todavía no se ha ejecutado.'
 );
 });
-
 
   tarjeta.appendChild(botonCambiarSeccion);
 }

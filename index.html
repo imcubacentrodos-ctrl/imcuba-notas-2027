@@ -1064,7 +1064,7 @@ botonVerHistorial.textContent = 'Ver historial';
 botonVerHistorial.addEventListener('click', async () => {
   const { data: movimientos, error } = await client
     .from('historial_cambios_seccion')
-    .select('id, seccion_origen_id, seccion_destino_id, ciclo_escolar, motivo, autorizado_por')
+    .select('id, seccion_origen_id, seccion_destino_id, ciclo_escolar, fecha_cambio, motivo, autorizado_por')
     .eq('estudiante_id', estudiante.id)
     .order('id', { ascending: false });
 
@@ -1094,11 +1094,45 @@ const nombreSeccion = (id) => {
     : 'Sección ID ' + id;
 };
 
+const { data: responsablesHistorial, error: errorResponsables } = await client
+  .from('perfiles')
+  .select('id, nombre_completo');
+
+if (errorResponsables) {
+  alert('No se pudieron consultar los responsables: ' +
+    errorResponsables.message);
+  return;
+}
+
+const nombreResponsable = (id) => {
+  const responsable = responsablesHistorial.find(p => p.id === id);
+  return responsable
+    ? responsable.nombre_completo
+    : 'Responsable no disponible';
+};
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return 'Fecha no registrada';
+
+  return new Date(fecha).toLocaleString('es-GT', {
+    timeZone: 'America/Guatemala',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
   const detalle = movimientos.map((movimiento, indice) =>
     (indice + 1) + '. Ciclo escolar: ' + movimiento.ciclo_escolar +
-  '\nSección de origen: ' + nombreSeccion(movimiento.seccion_origen_id) +
+'\nFecha del traslado: ' + formatearFecha(movimiento.fecha_cambio) +
+'\nSección de origen: ' + nombreSeccion(movimiento.seccion_origen_id) +
   '\nSección de destino: ' + nombreSeccion(movimiento.seccion_destino_id) +
-    '\nMotivo: ' + movimiento.motivo
+'\nMotivo: ' + movimiento.motivo +
+'\nAutorizado por: ' + nombreResponsable(movimiento.autorizado_por)
+
   ).join('\n\n');
 
   alert(

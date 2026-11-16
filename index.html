@@ -575,7 +575,7 @@ const { data: permisos, error: errorPermisos } =
 .select('seccion_id, ciclo_escolar, puede_consultar, secciones(grado, seccion)')
 
     .eq('docente_id', usuario.user.id)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .eq('puede_consultar', true);
 
 if (errorPermisos) {
@@ -619,7 +619,7 @@ if (currentRole === 'director') {
   const { data: secciones, error } = await client
     .from('secciones')
     .select('id, grado, seccion')
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .order('grado', { ascending: true })
     .order('seccion', { ascending: true });
 

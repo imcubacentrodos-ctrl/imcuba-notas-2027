@@ -1078,10 +1078,26 @@ botonVerHistorial.addEventListener('click', async () => {
     return;
   }
 
+const { data: seccionesHistorial, error: errorSecciones } = await client
+  .from('secciones')
+  .select('id, grado, seccion');
+
+if (errorSecciones) {
+  alert('No se pudieron consultar las secciones: ' + errorSecciones.message);
+  return;
+}
+
+const nombreSeccion = (id) => {
+  const seccion = seccionesHistorial.find(s => s.id === id);
+  return seccion
+    ? seccion.grado + 'º Básico - Sección ' + seccion.seccion
+    : 'Sección ID ' + id;
+};
+
   const detalle = movimientos.map((movimiento, indice) =>
     (indice + 1) + '. Ciclo escolar: ' + movimiento.ciclo_escolar +
-    '\nSección origen (ID): ' + movimiento.seccion_origen_id +
-    '\nSección destino (ID): ' + movimiento.seccion_destino_id +
+  '\nSección de origen: ' + nombreSeccion(movimiento.seccion_origen_id) +
+  '\nSección de destino: ' + nombreSeccion(movimiento.seccion_destino_id) +
     '\nMotivo: ' + movimiento.motivo
   ).join('\n\n');
 

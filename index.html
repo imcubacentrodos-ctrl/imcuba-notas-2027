@@ -628,8 +628,12 @@ selectorCiclo.appendChild(opcion);
         ' — Estado: ' + ciclo.estado;
 
       lista.appendChild(elemento);
+    
+if (Number(ciclo.anio) === cicloEscolarActual) {
+  opcion.selected = true;
     }
   }
+}
 
     // CARGAR SECCIONES PARA GESTIÓN DE ESTUDIANTES
     async function cargarSeccionesEstudiantes() {

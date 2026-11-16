@@ -937,13 +937,52 @@ if (currentRole === 'director') {
   const botonCambiarSeccion = document.createElement('button');
   botonCambiarSeccion.textContent = 'Cambiar sección';
 
-  botonCambiarSeccion.addEventListener('click', () => {
-    alert(
-      'Cambio interno de sección para: ' +
-      estudiante.nombres + ' ' + estudiante.apellidos +
-      '\nPróximamente seleccionaremos la nueva sección.'
-    );
-  });
+  
+botonCambiarSeccion.addEventListener('click', async () => {
+  const { data: seccionesDestino, error } = await client
+    .from('secciones')
+    .select('id, grado, seccion, ciclo_escolar')
+    .eq('ciclo_escolar', estudiante.ciclo_escolar)
+    .order('grado')
+    .order('seccion');
+
+  if (error) {
+    alert('No se pudieron consultar las secciones: ' + error.message);
+    return;
+  }
+
+  const seccionActual = seccionesDestino.find(
+    (seccion) => seccion.id === estudiante.seccion_id
+  );
+
+  if (!seccionActual) {
+    alert('No se encontró la sección actual del estudiante.');
+    return;
+  }
+
+  const opciones = seccionesDestino.filter(
+    (seccion) =>
+      seccion.grado === seccionActual.grado &&
+      seccion.id !== estudiante.seccion_id
+  );
+
+  if (opciones.length === 0) {
+    alert('No hay otras secciones disponibles para este grado.');
+    return;
+  }
+
+  const listado = opciones.map(
+    (seccion, indice) =>
+      (indice + 1) + '. ' +
+      seccionActual.grado + 'º Básico - Sección ' + seccion.seccion
+  ).join('\n');
+
+  alert(
+    'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+    '\nSecciones de destino disponibles:\n' + listado
+  );
+});
+
 
   tarjeta.appendChild(botonCambiarSeccion);
 }

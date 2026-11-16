@@ -1030,10 +1030,29 @@ const confirmarTraslado = confirm(
 
 if (!confirmarTraslado) return;
 
-alert(
-  'Confirmación recibida correctamente.\n' +
-  'El traslado todavía no se ha ejecutado.'
+const { error: errorTraslado } = await client.rpc(
+  'trasladar_estudiante_seccion',
+  {
+    p_estudiante_id: estudiante.id,
+    p_seccion_destino_id: seccionSeleccionada.id,
+    p_motivo: motivoTraslado
+  }
 );
+
+if (errorTraslado) {
+  alert('No se pudo realizar el traslado: ' + errorTraslado.message);
+  return;
+}
+
+alert(
+  'Traslado realizado correctamente.\n\n' +
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nNueva sección: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion
+);
+
+await cargarEstudiantesSeccion();
+
 });
 
   tarjeta.appendChild(botonCambiarSeccion);

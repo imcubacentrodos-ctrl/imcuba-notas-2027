@@ -867,7 +867,30 @@ if (!confirmarCambio) {
   return;
 }
 
-alert('Cambio confirmado. Pendiente de guardar en Supabase.');
+
+const { data: estudiantesActualizados, error: errorEstado } =
+  await client
+    .from('estudiantes')
+    .update({ estado: estadoSeleccionado })
+    .eq('id', estudiante.id)
+    .eq('seccion_id', estudiante.seccion_id)
+    .eq('ciclo_escolar', 2027)
+    .eq('estado', estudiante.estado)
+    .select('id, estado');
+
+if (errorEstado) {
+  alert('No se pudo cambiar el estado: ' + errorEstado.message);
+  return;
+}
+
+if (!estudiantesActualizados || estudiantesActualizados.length !== 1) {
+  alert('No se pudo confirmar el cambio. Verifica los permisos o actualiza la lista.');
+  return;
+}
+
+alert('Estado actualizado correctamente a: ' + estadoSeleccionado);
+await cargarEstudiantesSeccion();
+
 
 });
 

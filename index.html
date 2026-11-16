@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IMCUBA Notas 2027 | Acceso</title>
+  <title>IMCUBA Notas | Acceso</title>
 
   <style>
     * {
@@ -128,7 +128,7 @@
 <body>
   <main class="panel">
 
-    <h1>IMCUBA Notas 2027</h1>
+<h1>IMCUBA Notas</h1>
 
     <p class="muted">
       Instituto de Educación Básica por Cooperativa
@@ -555,7 +555,7 @@ await cargarSeccionesEstudiantes();
             secciones(grado, seccion)
           `)
           .eq('docente_id', usuario.user.id)
-          .eq('ciclo_escolar', 2027);
+          .eq('ciclo_escolar', cicloEscolarActual);
 
         if (error) throw error;
 
@@ -829,7 +829,7 @@ if (currentRole === 'docente' && seccionId) {
     .select('puede_registrar')
     .eq('docente_id', user.id)
     .eq('seccion_id', seccionId)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .maybeSingle();
 
   if (!errorPermiso && permiso?.puede_registrar === true) {
@@ -907,9 +907,10 @@ if (errorUsuario || !user) {
     .select('puede_modificar')
     .eq('docente_id', user.id)
     .eq('seccion_id', estudiante.seccion_id)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .eq('puede_modificar', true)
     .maybeSingle();
+
 
   if (errorPermiso || !permiso) {
     alert('No tienes permiso para modificar este estudiante.');
@@ -973,7 +974,7 @@ if (currentRole !== 'director') {
     .select('puede_retirar')
     .eq('docente_id', user.id)
     .eq('seccion_id', estudiante.seccion_id)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .eq('puede_retirar', true)
     .maybeSingle();
 
@@ -1057,11 +1058,12 @@ const { data: estudiantesActualizados, error: errorEstado } =
   await client
     .from('estudiantes')
     .update({ estado: estadoSeleccionado })
-    .eq('id', estudiante.id)
-    .eq('seccion_id', estudiante.seccion_id)
-    .eq('ciclo_escolar', 2027)
-    .eq('estado', estudiante.estado)
-    .select('id, estado');
+.eq('id', estudiante.id)
+.eq('seccion_id', estudiante.seccion_id)
+.eq('ciclo_escolar', cicloEscolarActual)
+.eq('estado', estudiante.estado)
+.select('id, estado');
+
 
 if (errorEstado) {
   alert('No se pudo cambiar el estado: ' + errorEstado.message);
@@ -1088,12 +1090,11 @@ if (currentRole === 'director') {
   
 botonCambiarSeccion.addEventListener('click', async () => {
   const { data: seccionesDestino, error } = await client
-    .from('secciones')
-    .select('id, grado, seccion, ciclo_escolar')
-    .eq('ciclo_escolar', 2027)
-
-    .order('grado')
-    .order('seccion');
+.from('secciones')
+.select('id, grado, seccion, ciclo_escolar')
+.eq('ciclo_escolar', cicloEscolarActual)
+.order('grado')
+.order('seccion');
 
   if (error) {
     alert('No se pudieron consultar las secciones: ' + error.message);
@@ -1480,11 +1481,11 @@ document.getElementById('guardarEstudiante')
         '<option value="">Seleccionar sección</option>';
 
       const { data, error } = await client
-        .from('secciones')
-        .select('id, grado, seccion')
-        .eq('ciclo_escolar', 2027)
-        .order('grado')
-        .order('seccion');
+.from('secciones')
+.select('id, grado, seccion')
+.eq('ciclo_escolar', cicloEscolarActual)
+.order('grado')
+.order('seccion');
 
       if (error) {
         throw new Error(
@@ -1635,7 +1636,8 @@ abrirCiclosEscolares.addEventListener('click', async () => {
               .eq('docente_id', docenteId)
               .eq('curso_id', Number(cursoId))
               .eq('seccion_id', Number(seccionId))
-              .eq('ciclo_escolar', 2027)
+              .eq('ciclo_escolar', cicloEscolarActual)
+
               .limit(1);
 
           if (consultaError) throw consultaError;
@@ -1652,7 +1654,8 @@ abrirCiclosEscolares.addEventListener('click', async () => {
                 docente_id: docenteId,
                 curso_id: Number(cursoId),
                 seccion_id: Number(seccionId),
-                ciclo_escolar: 2027
+                ciclo_escolar: cicloEscolarActual
+
               });
 
           if (guardarError) throw guardarError;

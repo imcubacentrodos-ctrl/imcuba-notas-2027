@@ -1056,6 +1056,16 @@ await cargarEstudiantesSeccion();
 });
 
   tarjeta.appendChild(botonCambiarSeccion);
+
+const botonVerHistorial = document.createElement('button');
+botonVerHistorial.textContent = 'Ver historial';
+
+botonVerHistorial.addEventListener('click', () => {
+  alert('Próximamente: historial de movimientos de ' +
+    estudiante.nombres + ' ' + estudiante.apellidos);
+});
+
+tarjeta.appendChild(botonVerHistorial);
 }
 
   contenedor.appendChild(tarjeta);

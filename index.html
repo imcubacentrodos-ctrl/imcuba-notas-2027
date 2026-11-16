@@ -836,29 +836,57 @@ if (currentRole !== 'director') {
 }
 
   
-const opcionesEstado = ['inscrito', 'retirado', 'trasladado'];
 
-const nuevoEstado = prompt(
-  'Selecciona el nuevo estado:\n' +
-  '1. Inscrito\n' +
-  '2. Retirado\n' +
-  '3. Trasladado\n\n' +
-  'Escribe el número de la opción:',
-  '1'
-);
+const estadoSeleccionado = await new Promise((resolver) => {
+  const panel = document.createElement('div');
+  panel.style.marginTop = '12px';
+  panel.style.padding = '15px';
+  panel.style.background = '#ffffff';
+  panel.style.borderRadius = '10px';
 
-if (nuevoEstado === null) return;
+  const titulo = document.createElement('p');
+  titulo.textContent = 'Selecciona el nuevo estado:';
+  titulo.style.color = '#17324d';
+  titulo.style.fontWeight = 'bold';
+  panel.appendChild(titulo);
 
-const numeroOpcion = Number(nuevoEstado.trim());
+  const selector = document.createElement('select');
+  selector.style.width = '100%';
+  selector.style.padding = '12px';
+  selector.style.marginBottom = '12px';
 
-if (![1, 2, 3].includes(numeroOpcion)) {
-  alert('Opción no válida. Selecciona 1, 2 o 3.');
-  return;
-}
+  ['inscrito', 'retirado', 'trasladado'].forEach((estado) => {
+    const opcion = document.createElement('option');
+    opcion.value = estado;
+    opcion.textContent = estado.charAt(0).toUpperCase() + estado.slice(1);
+    selector.appendChild(opcion);
+  });
 
-const estadoSeleccionado = opcionesEstado[numeroOpcion - 1];
+  selector.value = estudiante.estado;
+  panel.appendChild(selector);
 
+  const aceptar = document.createElement('button');
+  aceptar.textContent = 'Aceptar';
+  aceptar.onclick = () => {
+    const valor = selector.value;
+    panel.remove();
+    resolver(valor);
+  };
 
+  const cancelar = document.createElement('button');
+  cancelar.textContent = 'Cancelar';
+  cancelar.style.marginLeft = '10px';
+  cancelar.onclick = () => {
+    panel.remove();
+    resolver(null);
+  };
+
+  panel.appendChild(aceptar);
+  panel.appendChild(cancelar);
+  tarjeta.appendChild(panel);
+});
+
+if (estadoSeleccionado === null) return;
   
 if (estadoSeleccionado === estudiante.estado) {
   alert('El estudiante ya tiene ese estado.');

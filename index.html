@@ -1497,6 +1497,31 @@ document.getElementById('guardarEstudiante')
         }
       });
 
+  // DETECTAR SELECCIÓN DE CICLO ESCOLAR
+  document.getElementById('selectorCicloEscolar')
+    .addEventListener('change', (evento) => {
+
+      if (currentRole !== 'director') {
+        return;
+      }
+
+      const anioSeleccionado = Number(evento.target.value);
+
+      if (!anioSeleccionado) {
+        return;
+      }
+
+      
+const mensajeCiclos =
+  document.getElementById('mensajeCiclosEscolares');
+
+mensajeCiclos.textContent =
+  'Ciclo seleccionado para consulta: ' +
+  anioSeleccionado +
+  '. El ciclo de trabajo todavía no ha cambiado.';
+
+    });
+
   // ABRIR O CERRAR CICLOS ESCOLARES
 abrirCiclosEscolares.addEventListener('click', async () => {
 

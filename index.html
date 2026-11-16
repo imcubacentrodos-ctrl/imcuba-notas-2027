@@ -287,6 +287,16 @@
     Consulta y administración de ciclos escolares.
   </p>
 
+<div>
+  <label for="selectorCicloEscolar">
+    Ciclo escolar de trabajo:
+  </label>
+
+  <select id="selectorCicloEscolar">
+    <option value="">Seleccionar ciclo escolar</option>
+  </select>
+</div>
+
   <div id="listaCiclosEscolares"></div>
 </section>
 
@@ -571,6 +581,16 @@ await cargarSeccionesEstudiantes();
     const mensaje = document.getElementById('mensajeCiclosEscolares');
     const lista = document.getElementById('listaCiclosEscolares');
 
+const selectorCiclo =
+  document.getElementById('selectorCicloEscolar');
+
+selectorCiclo.replaceChildren();
+
+const opcionInicial = document.createElement('option');
+opcionInicial.value = '';
+opcionInicial.textContent = 'Seleccionar ciclo escolar';
+selectorCiclo.appendChild(opcionInicial);
+
     lista.replaceChildren();
     mensaje.textContent = 'Consultando ciclos escolares...';
 
@@ -593,6 +613,14 @@ await cargarSeccionesEstudiantes();
       'Ciclos escolares encontrados: ' + (ciclos || []).length;
 
     for (const ciclo of ciclos || []) {
+const opcion = document.createElement('option');
+
+opcion.value = ciclo.anio;
+opcion.textContent =
+  ciclo.anio + ' — ' + ciclo.estado;
+
+selectorCiclo.appendChild(opcion);
+
       const elemento = document.createElement('p');
 
       elemento.textContent =

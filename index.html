@@ -933,6 +933,21 @@ await cargarEstudiantesSeccion();
 
 tarjeta.appendChild(botonEstado);
 
+if (currentRole === 'director') {
+  const botonCambiarSeccion = document.createElement('button');
+  botonCambiarSeccion.textContent = 'Cambiar sección';
+
+  botonCambiarSeccion.addEventListener('click', () => {
+    alert(
+      'Cambio interno de sección para: ' +
+      estudiante.nombres + ' ' + estudiante.apellidos +
+      '\nPróximamente seleccionaremos la nueva sección.'
+    );
+  });
+
+  tarjeta.appendChild(botonCambiarSeccion);
+}
+
   contenedor.appendChild(tarjeta);
 }
 

@@ -706,7 +706,7 @@ if (puedeRegistrar && seccionId) {
     .from('estudiantes')
     .select('id, codigo_personal, nombres, apellidos, estado, seccion_id')
     .eq('seccion_id', seccionId)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .order('apellidos', { ascending: true })
     .order('nombres', { ascending: true });
 
@@ -1167,6 +1167,31 @@ if (!seccionId) {
   return;
 }
 
+const { data: seccionValida, error: errorSeccion } = await client
+  .from('secciones')
+  .select('id')
+  .eq('id', seccionId)
+  .eq('ciclo_escolar', cicloEscolarActual)
+  .maybeSingle();
+
+if (errorSeccion || !seccionValida) {
+  mensaje.textContent =
+    'La sección seleccionada no pertenece al ciclo escolar actual.';
+  return;
+}
+
+const { data: cicloActivo, error: errorCiclo } = await client
+  .from('ciclos_escolares')
+  .select('estado')
+  .eq('anio', cicloEscolarActual)
+  .maybeSingle();
+
+if (errorCiclo || !cicloActivo || cicloActivo.estado !== 'activo') {
+  mensaje.textContent =
+    'No se pueden registrar estudiantes: el ciclo escolar no está activo.';
+  return;
+}
+
   if (!codigo || !nombres || !apellidos) {
     mensaje.textContent = 'Completa todos los campos.';
     return;
@@ -1191,7 +1216,7 @@ if (currentRole === 'docente') {
     .select('puede_registrar')
     .eq('docente_id', user.id)
     .eq('seccion_id', seccionId)
-    .eq('ciclo_escolar', 2027)
+    .eq('ciclo_escolar', cicloEscolarActual)
     .maybeSingle();
 
   if (!errorPermiso && permiso?.puede_registrar === true) {
@@ -1212,7 +1237,7 @@ const { error: errorRegistro } = await client
     nombres: nombres,
     apellidos: apellidos,
     seccion_id: seccionId,
-    ciclo_escolar: 2027,
+    ciclo_escolar: cicloEscolarActual,
     estado: 'inscrito'
   });
 

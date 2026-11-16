@@ -269,7 +269,26 @@
           Asignaciones
         </button>
 
+<button
+  id="abrirCiclosEscolares"
+  type="button"
+>
+  Ciclos escolares
+</button>
+
       </div>
+
+<!-- MÓDULO DE CICLOS ESCOLARES -->
+<section id="moduloCiclosEscolares" class="hidden">
+  <hr>
+  <h3>Administración de ciclos escolares</h3>
+
+  <p id="mensajeCiclosEscolares">
+    Consulta y administración de ciclos escolares.
+  </p>
+
+  <div id="listaCiclosEscolares"></div>
+</section>
 
       <!-- MÓDULO DE ASIGNACIONES -->
       <section id="moduloAsignaciones" class="hidden">
@@ -362,6 +381,12 @@
     const moduloAsignaciones =
       document.getElementById('moduloAsignaciones');
 
+const moduloCiclosEscolares =
+  document.getElementById('moduloCiclosEscolares');
+
+const abrirCiclosEscolares =
+  document.getElementById('abrirCiclosEscolares');
+
     let client;
     let currentRole = null;
     let cicloEscolarActual = 2027;
@@ -376,6 +401,7 @@
       welcome.classList.add('hidden');
       directorPanel.classList.add('hidden');
       moduloAsignaciones.classList.add('hidden');
+      moduloCiclosEscolares.classList.add('hidden');
     }
 
     // VERIFICAR PERFIL
@@ -539,6 +565,43 @@ await cargarSeccionesEstudiantes();
           error.message;
       }
     }
+
+  // CONSULTAR CICLOS ESCOLARES
+  async function cargarCiclosEscolares() {
+    const mensaje = document.getElementById('mensajeCiclosEscolares');
+    const lista = document.getElementById('listaCiclosEscolares');
+
+    lista.replaceChildren();
+    mensaje.textContent = 'Consultando ciclos escolares...';
+
+    if (!client || currentRole !== 'director') {
+      mensaje.textContent = 'Acceso exclusivo de Dirección.';
+      return;
+    }
+
+    const { data: ciclos, error } = await client
+      .from('ciclos_escolares')
+      .select('anio, nombre, estado')
+      .order('anio', { ascending: false });
+
+    if (error) {
+      mensaje.textContent = 'Error al consultar ciclos: ' + error.message;
+      return;
+    }
+
+    mensaje.textContent =
+      'Ciclos escolares encontrados: ' + (ciclos || []).length;
+
+    for (const ciclo of ciclos || []) {
+      const elemento = document.createElement('p');
+
+      elemento.textContent =
+        ciclo.anio + ' — ' + ciclo.nombre +
+        ' — Estado: ' + ciclo.estado;
+
+      lista.appendChild(elemento);
+    }
+  }
 
     // CARGAR SECCIONES PARA GESTIÓN DE ESTUDIANTES
     async function cargarSeccionesEstudiantes() {
@@ -1401,6 +1464,33 @@ document.getElementById('guardarEstudiante')
           showMessage(error.message);
         }
       });
+
+  // ABRIR O CERRAR CICLOS ESCOLARES
+abrirCiclosEscolares.addEventListener('click', async () => {
+
+    if (currentRole !== 'director') {
+      showMessage(
+        'No tienes autorización para administrar ciclos escolares.'
+      );
+      return;
+    }
+
+    const estabaOculto =
+      moduloCiclosEscolares.classList.contains('hidden');
+
+    if (!estabaOculto) {
+      moduloCiclosEscolares.classList.add('hidden');
+      showMessage('');
+      return;
+    }
+
+    moduloAsignaciones.classList.add('hidden');
+    moduloCiclosEscolares.classList.remove('hidden');
+
+    await cargarCiclosEscolares();
+
+    showMessage('');
+  });
 
     // GUARDAR ASIGNACIÓN DOCENTE
     document.getElementById('guardarAsignacion')

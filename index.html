@@ -942,7 +942,8 @@ botonCambiarSeccion.addEventListener('click', async () => {
   const { data: seccionesDestino, error } = await client
     .from('secciones')
     .select('id, grado, seccion, ciclo_escolar')
-    .eq('ciclo_escolar', estudiante.ciclo_escolar)
+    .eq('ciclo_escolar', 2027)
+
     .order('grado')
     .order('seccion');
 

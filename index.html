@@ -1060,10 +1060,38 @@ await cargarEstudiantesSeccion();
 const botonVerHistorial = document.createElement('button');
 botonVerHistorial.textContent = 'Ver historial';
 
-botonVerHistorial.addEventListener('click', () => {
-  alert('Próximamente: historial de movimientos de ' +
-    estudiante.nombres + ' ' + estudiante.apellidos);
+
+botonVerHistorial.addEventListener('click', async () => {
+  const { data: movimientos, error } = await client
+    .from('historial_cambios_seccion')
+    .select('id, seccion_origen_id, seccion_destino_id, ciclo_escolar, motivo, autorizado_por')
+    .eq('estudiante_id', estudiante.id)
+    .order('id', { ascending: false });
+
+  if (error) {
+    alert('No se pudo consultar el historial: ' + error.message);
+    return;
+  }
+
+  if (!movimientos || movimientos.length === 0) {
+    alert('Este estudiante no tiene cambios de sección registrados.');
+    return;
+  }
+
+  const detalle = movimientos.map((movimiento, indice) =>
+    (indice + 1) + '. Ciclo escolar: ' + movimiento.ciclo_escolar +
+    '\nSección origen (ID): ' + movimiento.seccion_origen_id +
+    '\nSección destino (ID): ' + movimiento.seccion_destino_id +
+    '\nMotivo: ' + movimiento.motivo
+  ).join('\n\n');
+
+  alert(
+    'HISTORIAL DE MOVIMIENTOS\n\n' +
+    estudiante.nombres + ' ' + estudiante.apellidos +
+    '\n\n' + detalle
+  );
 });
+
 
 tarjeta.appendChild(botonVerHistorial);
 }

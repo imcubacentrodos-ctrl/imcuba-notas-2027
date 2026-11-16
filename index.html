@@ -972,16 +972,40 @@ botonCambiarSeccion.addEventListener('click', async () => {
     return;
   }
 
-  const listado = opciones.map(
-    (seccion, indice) =>
-      (indice + 1) + '. ' +
-      seccionActual.grado + 'º Básico - Sección ' + seccion.seccion
-  ).join('\n');
+  
+const listado = opciones.map(
+  (seccion, indice) =>
+    (indice + 1) + '. ' +
+    seccionActual.grado + 'º Básico - Sección ' + seccion.seccion
+).join('\n');
 
-  alert(
-    'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
-    '\nSecciones de destino disponibles:\n' + listado
-  );
+const respuesta = prompt(
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nSelecciona la sección de destino:\n' + listado +
+  '\n\nEscribe el número de la opción:',
+  '1'
+);
+
+if (respuesta === null) return;
+
+const numeroOpcion = Number(respuesta.trim());
+
+if (!Number.isInteger(numeroOpcion) ||
+    numeroOpcion < 1 ||
+    numeroOpcion > opciones.length) {
+  alert('Opción no válida. Selecciona un número del listado.');
+  return;
+}
+
+const seccionSeleccionada = opciones[numeroOpcion - 1];
+
+alert(
+  'Sección seleccionada correctamente:\n' +
+  seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion +
+  '\n\nTodavía no se ha realizado ningún traslado.'
+);
+
 });
 
 

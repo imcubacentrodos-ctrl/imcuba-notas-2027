@@ -405,6 +405,27 @@ const abrirCiclosEscolares =
     let currentRole = null;
     let cicloEscolarActual = 2027;
 
+async function obtenerCicloInstitucionalActivo() {
+  const { data, error } = await client
+    .from('ciclos_escolares')
+    .select('anio')
+    .eq('estado', 'activo');
+
+  if (error) {
+    throw new Error(
+      'No se pudo consultar el ciclo activo: ' + error.message
+    );
+  }
+
+  if (!data || data.length !== 1) {
+    throw new Error(
+      'Debe existir exactamente un ciclo escolar activo.'
+    );
+  }
+
+  return Number(data[0].anio);
+}
+
     function showMessage(value) {
       message.textContent = value;
     }
@@ -452,6 +473,18 @@ const abrirCiclosEscolares =
       }
 
       currentRole = profile.rol;
+
+try {
+  cicloEscolarActual =
+    await obtenerCicloInstitucionalActivo();
+} catch (error) {
+  showLogin();
+  showMessage(
+    'No se pudo determinar el ciclo escolar activo: ' +
+    error.message
+  );
+  return;
+}
 
 const panelDocente =
   document.getElementById('panelDocente');

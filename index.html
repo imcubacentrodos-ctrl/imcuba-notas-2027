@@ -276,6 +276,24 @@
   Ciclos escolares
 </button>
 
+
+
+        <!-- REPORTES INSTITUCIONALES: CONTROL DE ENTREGA -->
+        <section id="moduloControlEntrega" style="margin-top:22px;text-align:left">
+          <hr>
+          <h3>Reportes institucionales</h3>
+          <h4>Control de entrega de boletas</h4>
+          <p class="muted">Documento oficio horizontal, con nómina y espacios para firmas.</p>
+          <label for="controlSeccion">Grado y sección</label>
+          <select id="controlSeccion"><option value="">Selecciona una sección</option></select>
+          <label for="controlBimestre">Bimestre</label>
+          <select id="controlBimestre">
+            <option value="1">I</option><option value="2">II</option>
+            <option value="3">III</option><option value="4">IV</option>
+          </select>
+          <button id="generarControlEntrega" type="button">Preparar PDF / Imprimir</button>
+          <p id="controlEntregaEstado" class="muted" role="status" aria-live="polite"></p>
+        </section>
       </div>
 
 <!-- MÓDULO DE CICLOS ESCOLARES -->
@@ -527,6 +545,9 @@ panelEstudiantes.classList.toggle(
       }
       
 await cargarSeccionesEstudiantes();
+      if (currentRole === 'director') {
+        await cargarSeccionesControlEntrega();
+      }
 
     }
 
@@ -1742,6 +1763,147 @@ abrirCiclosEscolares.addEventListener('click', async () => {
           );
         }
       });
+
+
+    // PASO 438.3.4.324 - Documento imprimible a partir de la RPC protegida.
+    const controlSeccion = document.getElementById('controlSeccion');
+    const controlBimestre = document.getElementById('controlBimestre');
+    const controlEstado = document.getElementById('controlEntregaEstado');
+    const controlBoton = document.getElementById('generarControlEntrega');
+
+    function controlEscapar(valor) {
+      return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;',
+        '"': '&quot;', "'": '&#39;'
+      }[caracter]));
+    }
+
+    async function cargarSeccionesControlEntrega() {
+      if (currentRole !== 'director') return;
+      controlSeccion.innerHTML = '<option value="">Selecciona una sección</option>';
+      const { data, error } = await client.from('secciones')
+        .select('id,grado,seccion')
+        .eq('ciclo_escolar', cicloEscolarActual)
+        .order('grado').order('seccion');
+      if (error) {
+        controlEstado.textContent = 'No se pudieron cargar las secciones: ' + error.message;
+        return;
+      }
+      for (const sec of data || []) {
+        const opcion = document.createElement('option');
+        opcion.value = sec.id;
+        opcion.textContent = sec.grado + '.º básico — Sección ' + sec.seccion;
+        controlSeccion.appendChild(opcion);
+      }
+    }
+
+    function construirControlEntrega(datos) {
+      const primero = datos[0];
+      const filas = datos.map(e => `<tr>
+        <td class="numero">${controlEscapar(e.numero)}</td>
+        <td>${controlEscapar(e.nombre_estudiante)}</td>
+        <td></td><td></td><td></td>
+      </tr>`).join('');
+      const romanos = ['I','II','III','IV'];
+      const titulo = controlEscapar(primero.nombre_institucion);
+      const ciclo = controlEscapar(primero.ciclo_escolar);
+      const grado = controlEscapar(primero.grado);
+      const seccion = controlEscapar(primero.seccion);
+      const bimestre = romanos[Number(primero.bimestre)-1] || '';
+      const generado = new Date(primero.fecha_generacion || Date.now())
+        .toLocaleString('es-GT', {timeZone:'America/Guatemala'});
+      return `<!doctype html><html lang="es"><head><meta charset="utf-8">
+      <title>Control entrega boletas ${grado}${seccion} - ${bimestre}</title>
+      <style>
+        @page { size: legal landscape; margin: 13mm 15mm; }
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; color:#182e46; margin:0; font-size:10pt; }
+        header { text-align:center; border-bottom:2px solid #183b5c; padding-bottom:8px; }
+        h1 { font-size:15pt; margin:0 0 5px; text-transform:uppercase; }
+        h2 { font-size:12pt; margin:12px 0 7px; text-align:center; }
+        .datos { display:flex; justify-content:space-between; gap:15px; margin:10px 0; font-weight:bold; }
+        table { border-collapse:collapse; width:100%; table-layout:fixed; }
+        th,td { border:1px solid #43576c; padding:7px 6px; overflow-wrap:anywhere; }
+        th { background:#e8eef4; text-align:center; }
+        td { height:30px; color:#111; }
+        .numero { text-align:center; }
+        thead { display:table-header-group; }
+        tr { break-inside:avoid; page-break-inside:avoid; }
+        .firmas { display:flex; justify-content:space-around; gap:50px; margin-top:45px; text-align:center; }
+        .firmas > div { border-top:1px solid #24394d; padding-top:8px; width:35%; }
+        footer { font-size:8pt; color:#536474; margin-top:15px; }
+        .acciones { margin-bottom:15px; text-align:center; }
+        .acciones button { padding:10px 20px; cursor:pointer; }
+        @media print { .acciones {display:none;} }
+      </style></head><body>
+      <div class="acciones"><button onclick="window.print()">Imprimir / Guardar como PDF</button></div>
+      <header><h1>${titulo}</h1><div>Ciclo escolar ${ciclo}</div></header>
+      <h2>CONTROL COLECTIVO DE ENTREGA DE BOLETAS</h2>
+      <div class="datos"><span>Grado: ${grado}.º básico &nbsp; Sección: ${seccion}</span>
+      <span>Bimestre: ${bimestre}</span></div>
+      <table><colgroup><col style="width:5%"><col style="width:35%">
+      <col style="width:27%"><col style="width:20%"><col style="width:13%"></colgroup>
+      <thead><tr><th>No.</th><th>Nombre del estudiante</th>
+      <th>Nombre de quien recibe</th><th>Firma</th><th>Fecha</th></tr></thead>
+      <tbody>${filas}</tbody></table>
+      <div class="firmas"><div>Docente guía</div><div>Dirección / Sello</div></div>
+      <footer>Generado: ${controlEscapar(generado)} (hora de Guatemala).
+      Documento para registro físico de entrega; los espacios de recibido se completan a mano.</footer>
+      </body></html>`;
+    }
+
+    controlBoton.addEventListener('click', async () => {
+      if (currentRole !== 'director') {
+        controlEstado.textContent = 'Solo Dirección puede utilizar este módulo.';
+        return;
+      }
+      const seccionId = Number(controlSeccion.value);
+      if (!seccionId) {
+        controlEstado.textContent = 'Selecciona primero un grado y sección.';
+        return;
+      }
+      // Abrir en el gesto del usuario para evitar bloqueos de ventanas emergentes.
+      const ventana = window.open('', '_blank');
+      if (!ventana) {
+        controlEstado.textContent = 'Permite las ventanas emergentes para imprimir el documento.';
+        return;
+      }
+      ventana.document.write('<p style="font-family:Arial">Preparando documento…</p>');
+      controlBoton.disabled = true;
+      controlEstado.textContent = 'Consultando nómina autorizada…';
+      try {
+        const { data: ciclos, error: errorCiclos } = await client
+          .from('ciclos_escolares').select('id').eq('anio', cicloEscolarActual);
+        if (errorCiclos) throw errorCiclos;
+        if (!ciclos || ciclos.length !== 1) {
+          throw new Error('No se encontró un ciclo escolar único para el año activo.');
+        }
+        const { data, error } = await client.rpc(
+          'generar_datos_control_entrega_boletas', {
+            p_seccion_id: seccionId,
+            p_ciclo_escolar_id: ciclos[0].id,
+            p_bimestre: Number(controlBimestre.value),
+            p_incluir_retirados: false
+          }
+        );
+        if (error) throw error;
+        if (!data || !data.length) {
+          ventana.close();
+          controlEstado.textContent = 'La sección no tiene estudiantes activos o no hay datos institucionales.';
+          return;
+        }
+        ventana.document.open();
+        ventana.document.write(construirControlEntrega(data));
+        ventana.document.close();
+        controlEstado.textContent = 'Documento preparado con ' + data.length +
+          ' estudiante(s). En la nueva pestaña, selecciona Imprimir / Guardar como PDF.';
+      } catch (error) {
+        ventana.close();
+        controlEstado.textContent = 'No se pudo preparar el documento: ' + error.message;
+      } finally {
+        controlBoton.disabled = false;
+      }
+    });
 
     // INICIALIZAR APLICACIÓN
     async function initialize() {

@@ -1,0 +1,1938 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IMCUBA Notas | Acceso</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #102c4b;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .panel {
+      width: min(100%, 470px);
+      background: #1c4265;
+      border-radius: 20px;
+      padding: 34px 26px;
+      text-align: center;
+      box-shadow: 0 16px 36px #071a2d55;
+    }
+
+    h1 {
+      color: #e8c56b;
+      font-size: clamp(28px, 7vw, 40px);
+      margin: 0 0 10px;
+    }
+
+    h2 {
+      font-size: 23px;
+      margin: 14px 0 24px;
+    }
+
+    h3 {
+      margin-top: 24px;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 15px 0 7px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #b9c8d5;
+      background: #fff;
+      color: #102c4b;
+      font-size: 16px;
+    }
+
+    select {
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      background: #e8c56b;
+      color: #102c4b;
+      border: 0;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: #d4e0e9;
+      font-size: 14px;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #a9bfd0;
+      margin: 22px 0;
+    }
+
+    #moduloAsignaciones {
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    #moduloAsignaciones h3 {
+      color: #e8c56b;
+      text-align: center;
+    }
+
+    #moduloAsignaciones .muted {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="panel">
+
+<h1>IMCUBA Notas</h1>
+
+    <p class="muted">
+      Instituto de Educación Básica por Cooperativa
+      <br>
+      Centro No. Dos, Parcelamiento La Máquina
+    </p>
+
+    <hr>
+
+    <!-- INICIO DE SESIÓN -->
+    <section id="login">
+      <h2>Iniciar sesión</h2>
+
+      <form id="loginForm">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required
+        >
+
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button id="loginBtn" type="submit">
+          Ingresar
+        </button>
+      </form>
+
+      <p class="muted">
+        Las cuentas son autorizadas por Dirección.
+      </p>
+    </section>
+
+    <!-- PANEL PRINCIPAL -->
+    <section id="welcome" class="hidden">
+
+      <h2>Panel de Control</h2>
+
+      <p id="userName"></p>
+      <p id="userRole"></p>
+      
+<!-- MÓDULO DE GESTIÓN DE ESTUDIANTES -->
+<section id="panelEstudiantes" class="hidden">
+  <hr>
+  <h3>Gestión de estudiantes</h3>
+
+  <p class="muted">
+    Administra los estudiantes de las secciones
+    autorizadas por Dirección.
+  </p>
+
+  <div id="contenidoEstudiantes">
+    
+<label for="seccionEstudiantes">
+  Selecciona una sección:
+</label>
+
+<select id="seccionEstudiantes">
+  <option value="">
+    Cargando secciones autorizadas...
+  </option>
+</select>
+
+<p id="mensajeEstudiantes" class="muted">
+  Las secciones disponibles dependerán
+  de tus permisos.
+</p>
+    
+<div id="listaEstudiantes" style="margin-top:20px;">
+  <p class="muted">
+    Selecciona una sección para consultar sus estudiantes.
+  </p>
+</div>
+
+<!-- FORMULARIO DE REGISTRO DE ESTUDIANTES -->
+<div id="formularioEstudiante" class="hidden">
+  <hr>
+  <h3>Registrar estudiante</h3>
+
+  <label for="codigoEstudiante">Código personal:</label>
+  <input id="codigoEstudiante" type="text">
+
+  <label for="nombresEstudiante">Nombres:</label>
+  <input id="nombresEstudiante" type="text">
+
+  <label for="apellidosEstudiante">Apellidos:</label>
+  <input id="apellidosEstudiante" type="text">
+
+  <button id="guardarEstudiante" type="button">
+    Guardar estudiante
+  </button>
+
+  <p id="mensajeRegistroEstudiante" class="muted"></p>
+</div>
+
+  </div>
+</section>
+
+
+<!-- PANEL ACADÉMICO DEL DOCENTE -->
+<section id="panelDocente" class="hidden">
+  <hr>
+
+  <h3>Mis cursos asignados</h3>
+
+  <p class="muted">
+    Consulta las asignaturas, grados y secciones
+    autorizados por Dirección.
+  </p>
+
+  <div id="listaCursosDocente">
+    <p class="muted">
+      Cargando cursos asignados...
+    </p>
+  </div>
+</section>
+
+      <!-- OPCIONES EXCLUSIVAS DE DIRECCIÓN -->
+      <div id="directorPanel" class="hidden">
+
+        <h3>Administración Académica</h3>
+
+        <button type="button">Docentes</button>
+        <button type="button">Grados y Secciones</button>
+        <button type="button">Cursos</button>
+
+        <button
+          id="abrirAsignaciones"
+          type="button"
+        >
+          Asignaciones
+        </button>
+
+<button
+  id="abrirCiclosEscolares"
+  type="button"
+>
+  Ciclos escolares
+</button>
+
+
+
+        <!-- REPORTES INSTITUCIONALES: CONTROL DE ENTREGA -->
+        <section id="moduloControlEntrega" style="margin-top:22px;text-align:left">
+          <hr>
+          <h3>Reportes institucionales</h3>
+          <h4>Control de entrega de boletas</h4>
+          <p class="muted">Documento oficio horizontal, con nómina y espacios para firmas.</p>
+          <label for="controlSeccion">Grado y sección</label>
+          <select id="controlSeccion"><option value="">Selecciona una sección</option></select>
+          <label for="controlBimestre">Bimestre</label>
+          <select id="controlBimestre">
+            <option value="1">I</option><option value="2">II</option>
+            <option value="3">III</option><option value="4">IV</option>
+          </select>
+          <button id="generarControlEntrega" type="button">Preparar PDF / Imprimir</button>
+          <p id="controlEntregaEstado" class="muted" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+
+<!-- MÓDULO DE CICLOS ESCOLARES -->
+<section id="moduloCiclosEscolares" class="hidden">
+  <hr>
+  <h3>Administración de ciclos escolares</h3>
+
+  <p id="mensajeCiclosEscolares">
+    Consulta y administración de ciclos escolares.
+  </p>
+
+<p id="indicadorCicloActivo">
+  Consultando ciclo institucional activo...
+</p>
+
+<div>
+  <label for="selectorCicloEscolar">
+  Ciclo escolar para consultar:
+  </label>
+
+  <select id="selectorCicloEscolar">
+    <option value="">Seleccionar ciclo escolar</option>
+  </select>
+</div>
+
+  <div id="listaCiclosEscolares"></div>
+</section>
+
+      <!-- MÓDULO DE ASIGNACIONES -->
+      <section id="moduloAsignaciones" class="hidden">
+
+        <hr>
+
+        <h3>Asignaciones Docentes</h3>
+
+        <p class="muted">
+          Administra los cursos y secciones
+          asignados a cada docente.
+        </p>
+
+        <label for="docenteAsignacion">
+          Docente
+        </label>
+
+        <select id="docenteAsignacion">
+          <option value="">
+            Seleccionar docente
+          </option>
+        </select>
+
+        <label for="cursoAsignacion">
+          Curso
+        </label>
+
+        <select id="cursoAsignacion">
+          <option value="">
+            Seleccionar curso
+          </option>
+        </select>
+
+        <label for="seccionAsignacion">
+          Grado y sección
+        </label>
+
+        <select id="seccionAsignacion">
+          <option value="">
+            Seleccionar sección
+          </option>
+        </select>
+
+        
+<button
+  id="guardarAsignacion"
+  type="button"
+>
+  Guardar asignación
+</button>
+
+
+      </section>
+
+      <p class="muted">
+        Los demás módulos académicos
+        están en desarrollo.
+      </p>
+
+      <button id="salir" type="button">
+        Cerrar sesión
+      </button>
+
+    </section>
+
+    <p
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+    ></p>
+
+  </main>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://cwbjfsnqghlpbegdesuy.supabase.co';
+
+    const SUPABASE_PUBLIC_KEY =
+      'sb_publishable_nsrJRjcBcLOnKU-rZneE5Q_n86nSsT4';
+
+    const message = document.getElementById('message');
+    const login = document.getElementById('login');
+    const welcome = document.getElementById('welcome');
+    const loginBtn = document.getElementById('loginBtn');
+    const directorPanel = document.getElementById('directorPanel');
+    const moduloAsignaciones =
+      document.getElementById('moduloAsignaciones');
+
+const moduloCiclosEscolares =
+  document.getElementById('moduloCiclosEscolares');
+
+const abrirCiclosEscolares =
+  document.getElementById('abrirCiclosEscolares');
+
+    let client;
+    let currentRole = null;
+    let cicloEscolarActual = null;
+
+async function obtenerCicloInstitucionalActivo() {
+  const { data, error } = await client
+    .from('ciclos_escolares')
+    .select('anio')
+    .eq('estado', 'activo');
+
+  if (error) {
+    throw new Error(
+      'No se pudo consultar el ciclo activo: ' + error.message
+    );
+  }
+
+  if (!data || data.length !== 1) {
+    throw new Error(
+      'Debe existir exactamente un ciclo escolar activo.'
+    );
+  }
+
+  return Number(data[0].anio);
+}
+
+    function showMessage(value) {
+      message.textContent = value;
+    }
+
+    function showLogin() {
+      currentRole = null;
+      login.classList.remove('hidden');
+      welcome.classList.add('hidden');
+      directorPanel.classList.add('hidden');
+      moduloAsignaciones.classList.add('hidden');
+      moduloCiclosEscolares.classList.add('hidden');
+    }
+
+    // VERIFICAR PERFIL
+    async function loadProfile() {
+      const { data: userData, error: userError } =
+        await client.auth.getUser();
+
+      if (userError || !userData.user) {
+        showLogin();
+        return;
+      }
+
+      const { data: profile, error: profileError } =
+        await client
+          .from('perfiles')
+          .select('nombre_completo, rol, activo')
+          .eq('id', userData.user.id)
+          .single();
+
+      if (
+        profileError ||
+        !profile ||
+        profile.activo !== true ||
+        !['director', 'docente'].includes(profile.rol)
+      ) {
+        await client.auth.signOut();
+        showLogin();
+
+        showMessage(
+          'Esta cuenta no tiene un perfil activo y autorizado. Consulta a Dirección.'
+        );
+
+        return;
+      }
+
+      currentRole = profile.rol;
+
+try {
+  cicloEscolarActual =
+    await obtenerCicloInstitucionalActivo();
+} catch (error) {
+  showLogin();
+  showMessage(
+    'No se pudo determinar el ciclo escolar activo: ' +
+    error.message
+  );
+  return;
+}
+
+const panelDocente =
+  document.getElementById('panelDocente');
+
+panelDocente.classList.toggle(
+  'hidden',
+  currentRole !== 'docente'
+);
+      
+const panelEstudiantes =
+    document.getElementById('panelEstudiantes');
+
+panelEstudiantes.classList.toggle(
+    'hidden',
+    currentRole !== 'director' &&
+    currentRole !== 'docente'
+);
+
+      document.getElementById('userName').textContent =
+        profile.nombre_completo || 'Usuario';
+
+      document.getElementById('userRole').textContent =
+        currentRole === 'director'
+          ? 'Rol: Dirección'
+          : 'Rol: Docente';
+
+      directorPanel.classList.toggle(
+        'hidden',
+        currentRole !== 'director'
+      );
+
+      moduloAsignaciones.classList.add('hidden');
+
+      login.classList.add('hidden');
+      welcome.classList.remove('hidden');
+
+      showMessage('Inicio de sesión correcto.');
+            if (currentRole === 'docente') {
+        await cargarCursosDocente();
+      }
+      
+await cargarSeccionesEstudiantes();
+      if (currentRole === 'director') {
+        await cargarSeccionesControlEntrega();
+      }
+
+    }
+
+    // CARGAR CURSOS ASIGNADOS AL DOCENTE
+    async function cargarCursosDocente() {
+      const contenedor =
+        document.getElementById('listaCursosDocente');
+
+      contenedor.textContent = 'Cargando cursos asignados...';
+
+      try {
+        const { data: usuario, error: errorUsuario } =
+          await client.auth.getUser();
+
+        if (errorUsuario || !usuario.user) {
+          throw new Error('No se pudo identificar al docente.');
+        }
+
+        const { data, error } = await client
+          .from('asignaciones_docentes')
+          .select(`
+            id,
+            curso_id,
+            seccion_id,
+            cursos(nombre),
+            secciones(grado, seccion)
+          `)
+          .eq('docente_id', usuario.user.id)
+          .eq('ciclo_escolar', cicloEscolarActual);
+
+        if (error) throw error;
+
+        contenedor.replaceChildren();
+
+        if (!data || data.length === 0) {
+          contenedor.textContent =
+            'Todavía no tienes cursos asignados.';
+          return;
+        }
+
+        const asignaciones = [...data].sort((a, b) => {
+          const gradoA = Number(a.secciones?.grado || 0);
+          const gradoB = Number(b.secciones?.grado || 0);
+
+          return gradoA - gradoB ||
+            String(a.secciones?.seccion || '').localeCompare(
+              String(b.secciones?.seccion || '')
+            ) ||
+            String(a.cursos?.nombre || '').localeCompare(
+              String(b.cursos?.nombre || '')
+            );
+        });
+
+        for (const asignacion of asignaciones) {
+          const tarjeta = document.createElement('div');
+
+          tarjeta.style.padding = '15px';
+          tarjeta.style.marginTop = '12px';
+          tarjeta.style.background = '#102c4b';
+          tarjeta.style.borderRadius = '10px';
+          tarjeta.style.textAlign = 'left';
+
+          const titulo = document.createElement('strong');
+          titulo.textContent =
+            asignacion.cursos?.nombre || 'Curso sin nombre';
+
+          const detalle = document.createElement('p');
+          detalle.className = 'muted';
+          detalle.textContent =
+            (asignacion.secciones?.grado || '?') +
+            'º Básico - Sección ' +
+            (asignacion.secciones?.seccion || '?');
+
+          tarjeta.appendChild(titulo);
+          tarjeta.appendChild(detalle);
+          contenedor.appendChild(tarjeta);
+        }
+
+      } catch (error) {
+        console.error('Error al cargar cursos:', error);
+        contenedor.textContent =
+          'No se pudieron cargar los cursos: ' +
+          error.message;
+      }
+    }
+
+  // CONSULTAR CICLOS ESCOLARES
+  async function cargarCiclosEscolares() {
+    const mensaje = document.getElementById('mensajeCiclosEscolares');
+    const lista = document.getElementById('listaCiclosEscolares');
+
+const selectorCiclo =
+  document.getElementById('selectorCicloEscolar');
+
+selectorCiclo.replaceChildren();
+
+const opcionInicial = document.createElement('option');
+opcionInicial.value = '';
+opcionInicial.textContent = 'Seleccionar ciclo escolar';
+selectorCiclo.appendChild(opcionInicial);
+
+    lista.replaceChildren();
+    mensaje.textContent = 'Consultando ciclos escolares...';
+
+    if (!client || currentRole !== 'director') {
+      mensaje.textContent = 'Acceso exclusivo de Dirección.';
+      return;
+    }
+
+    const { data: ciclos, error } = await client
+      .from('ciclos_escolares')
+      .select('anio, nombre, estado')
+      .order('anio', { ascending: false });
+
+    if (error) {
+      mensaje.textContent = 'Error al consultar ciclos: ' + error.message;
+      return;
+    }
+
+    mensaje.textContent =
+      'Ciclos escolares encontrados: ' + (ciclos || []).length;
+
+const indicadorActivo =
+  document.getElementById('indicadorCicloActivo');
+
+const cicloActivo = (ciclos || []).find(
+  ciclo => ciclo.estado === 'activo'
+);
+
+if (cicloActivo) {
+  indicadorActivo.textContent =
+    'Ciclo institucional activo: ' + cicloActivo.anio;
+} else {
+  indicadorActivo.textContent =
+    'No hay un ciclo institucional activo.';
+}
+
+    for (const ciclo of ciclos || []) {
+const opcion = document.createElement('option');
+
+opcion.value = ciclo.anio;
+opcion.textContent =
+  ciclo.anio + ' — ' + ciclo.estado;
+
+selectorCiclo.appendChild(opcion);
+
+      const elemento = document.createElement('p');
+
+      elemento.textContent =
+        ciclo.anio + ' — ' + ciclo.nombre +
+        ' — Estado: ' + ciclo.estado;
+
+      lista.appendChild(elemento);
+    
+if (Number(ciclo.anio) === cicloEscolarActual) {
+  opcion.selected = true;
+    }
+  }
+}
+
+    // CARGAR SECCIONES PARA GESTIÓN DE ESTUDIANTES
+    async function cargarSeccionesEstudiantes() {
+      const selector =
+        document.getElementById('seccionEstudiantes');
+
+      const mensaje =
+        document.getElementById('mensajeEstudiantes');
+
+      selector.replaceChildren();
+
+      const opcionInicial = document.createElement('option');
+      opcionInicial.value = '';
+      opcionInicial.textContent = 'Cargando secciones...';
+      selector.appendChild(opcionInicial);
+
+      mensaje.textContent =
+        'Consultando las secciones autorizadas...';
+      
+if (currentRole === 'docente') {
+  const { data: usuario, error: errorUsuario } =
+    await client.auth.getUser();
+
+  if (errorUsuario || !usuario.user) {
+    mensaje.textContent =
+      'No se pudo identificar al docente.';
+    return;
+  }
+
+const { data: permisos, error: errorPermisos } =
+  await client
+    .from('permisos_estudiantes')
+   
+.select('seccion_id, ciclo_escolar, puede_consultar, secciones(grado, seccion)')
+
+    .eq('docente_id', usuario.user.id)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .eq('puede_consultar', true);
+
+if (errorPermisos) {
+  mensaje.textContent =
+    'Error al consultar permisos: ' + errorPermisos.message;
+  return;
+}
+
+
+selector.replaceChildren();
+
+const opcionInicial = document.createElement('option');
+opcionInicial.value = '';
+opcionInicial.textContent = 'Seleccionar sección';
+selector.appendChild(opcionInicial);
+
+for (const permiso of permisos || []) {
+  const seccion = permiso.secciones;
+
+  if (!seccion) continue;
+
+  const opcion = document.createElement('option');
+  opcion.value = permiso.seccion_id;
+
+  opcion.textContent =
+    seccion.grado + 'º Básico - Sección ' +
+    seccion.seccion;
+
+  selector.appendChild(opcion);
+}
+
+mensaje.textContent =
+  'Secciones autorizadas encontradas: ' +
+  (permisos || []).length;
+
+}
+
+
+    
+if (currentRole === 'director') {
+  const { data: secciones, error } = await client
+    .from('secciones')
+    .select('id, grado, seccion')
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .order('grado', { ascending: true })
+    .order('seccion', { ascending: true });
+
+  if (error) {
+    mensaje.textContent =
+      'Error al cargar secciones: ' + error.message;
+    return;
+  }
+
+  
+selector.replaceChildren();
+
+const opcionDireccion = document.createElement('option');
+opcionDireccion.value = '';
+opcionDireccion.textContent = 'Seleccionar sección';
+selector.appendChild(opcionDireccion);
+
+for (const seccion of secciones || []) {
+  const opcion = document.createElement('option');
+
+  opcion.value = seccion.id;
+  opcion.textContent =
+    seccion.grado + 'º Básico - Sección ' +
+    seccion.seccion;
+
+  selector.appendChild(opcion);
+}
+
+  mensaje.textContent =
+    'Secciones institucionales encontradas: ' +
+    (secciones || []).length;
+}
+}
+    
+document.getElementById('seccionEstudiantes').addEventListener('change', cargarEstudiantesSeccion);
+
+ // CARGAR ESTUDIANTES DE UNA SECCIÓN
+async function cargarEstudiantesSeccion() {
+  const selector = document.getElementById('seccionEstudiantes');
+  const contenedor = document.getElementById('listaEstudiantes');
+  const seccionId = selector.value; 
+const formulario = document.getElementById('formularioEstudiante');
+formulario.classList.add('hidden');
+
+let puedeRegistrar = false;
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  contenedor.textContent = 'No se pudo verificar el usuario autenticado.';
+  return;
+}
+if (currentRole === 'director') {
+  puedeRegistrar = true;
+}
+
+if (currentRole === 'docente' && seccionId) {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_registrar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .maybeSingle();
+
+  if (!errorPermiso && permiso?.puede_registrar === true) {
+    puedeRegistrar = true;
+  }
+}
+
+if (puedeRegistrar && seccionId) {
+  formulario.classList.remove('hidden');
+}
+
+  if (!seccionId) {
+    contenedor.textContent =
+      'Selecciona una sección para consultar sus estudiantes.';
+    return;
+  }
+
+  contenedor.textContent = 'Cargando estudiantes...';
+
+  const { data: estudiantes, error } = await client
+    .from('estudiantes')
+    .select('id, codigo_personal, nombres, apellidos, estado, seccion_id')
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .order('apellidos', { ascending: true })
+    .order('nombres', { ascending: true });
+
+  if (error) {
+    contenedor.textContent =
+      'Error al consultar estudiantes: ' + error.message;
+    return;
+  }
+
+  
+contenedor.replaceChildren();
+
+const titulo = document.createElement('p');
+titulo.textContent =
+  'Estudiantes encontrados: ' + (estudiantes || []).length;
+contenedor.appendChild(titulo);
+
+for (const estudiante of estudiantes || []) {
+  const tarjeta = document.createElement('div');
+  tarjeta.style.padding = '12px';
+  tarjeta.style.marginTop = '10px';
+  tarjeta.style.background = '#102c4b';
+  tarjeta.style.borderRadius = '10px';
+  tarjeta.style.textAlign = 'left';
+
+  const nombre = document.createElement('strong');
+  nombre.textContent =
+    estudiante.apellidos + ', ' + estudiante.nombres;
+
+  const detalle = document.createElement('p');
+  detalle.className = 'muted';
+  detalle.textContent =
+    'Código: ' + (estudiante.codigo_personal || 'Sin código') +
+    ' | Estado: ' + (estudiante.estado || 'Sin estado');
+
+  tarjeta.appendChild(nombre);
+  tarjeta.appendChild(detalle);
+  const botonEditar = document.createElement('button');
+botonEditar.textContent = 'Editar estudiante';
+  botonEditar.addEventListener('click', async () => {
+    const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  alert('Debes iniciar sesión para editar estudiantes.');
+  return;
+}
+    if (currentRole !== 'director') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_modificar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', estudiante.seccion_id)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .eq('puede_modificar', true)
+    .maybeSingle();
+
+
+  if (errorPermiso || !permiso) {
+    alert('No tienes permiso para modificar este estudiante.');
+    return;
+  }
+}
+  const nuevosNombres = prompt(
+  'Editar nombres del estudiante:',
+  estudiante.nombres
+);
+    const nuevosApellidos = prompt(
+  'Editar apellidos del estudiante:',
+  estudiante.apellidos
+);
+if (
+  nuevosNombres === null ||
+  nuevosApellidos === null ||
+  !nuevosNombres.trim() ||
+  !nuevosApellidos.trim()
+) {
+  alert('Edición cancelada o datos incompletos.');
+  return;
+}
+ const { data: estudiantesEditados, error: errorEdicion } = await client
+  .from('estudiantes')
+  .update({
+    nombres: nuevosNombres.trim(),
+    apellidos: nuevosApellidos.trim()
+  })
+  .eq('id', estudiante.id)
+.select('id');
+  if (errorEdicion) {
+  alert('Error al editar estudiante: ' + errorEdicion.message);
+  return;
+}
+  if (!estudiantesEditados || estudiantesEditados.length !== 1) {
+  alert('No se pudo confirmar la actualización del estudiante.');
+  return;
+}
+  alert('Estudiante actualizado correctamente.');
+await cargarEstudiantesSeccion();
+});
+tarjeta.appendChild(botonEditar);
+  
+const botonEstado = document.createElement('button');
+botonEstado.textContent = 'Cambiar estado';
+
+botonEstado.addEventListener('click', async () => {
+  
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  alert('Debes iniciar sesión para cambiar el estado de estudiantes.');
+  return;
+}
+
+if (currentRole !== 'director') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_retirar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', estudiante.seccion_id)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .eq('puede_retirar', true)
+    .maybeSingle();
+
+  if (errorPermiso || !permiso) {
+    alert('No tienes autorización para cambiar el estado de este estudiante.');
+    return;
+  }
+}
+
+  
+
+const estadoSeleccionado = await new Promise((resolver) => {
+  const panel = document.createElement('div');
+  panel.style.marginTop = '12px';
+  panel.style.padding = '15px';
+  panel.style.background = '#ffffff';
+  panel.style.borderRadius = '10px';
+
+  const titulo = document.createElement('p');
+  titulo.textContent = 'Selecciona el nuevo estado:';
+  titulo.style.color = '#17324d';
+  titulo.style.fontWeight = 'bold';
+  panel.appendChild(titulo);
+
+  const selector = document.createElement('select');
+  selector.style.width = '100%';
+  selector.style.padding = '12px';
+  selector.style.marginBottom = '12px';
+
+  ['inscrito', 'retirado', 'trasladado'].forEach((estado) => {
+    const opcion = document.createElement('option');
+    opcion.value = estado;
+    opcion.textContent = estado.charAt(0).toUpperCase() + estado.slice(1);
+    selector.appendChild(opcion);
+  });
+
+  selector.value = estudiante.estado;
+  panel.appendChild(selector);
+
+  const aceptar = document.createElement('button');
+  aceptar.textContent = 'Aceptar';
+  aceptar.onclick = () => {
+    const valor = selector.value;
+    panel.remove();
+    resolver(valor);
+  };
+
+  const cancelar = document.createElement('button');
+  cancelar.textContent = 'Cancelar';
+  cancelar.style.marginLeft = '10px';
+  cancelar.onclick = () => {
+    panel.remove();
+    resolver(null);
+  };
+
+  panel.appendChild(aceptar);
+  panel.appendChild(cancelar);
+  tarjeta.appendChild(panel);
+});
+
+if (estadoSeleccionado === null) return;
+  
+if (estadoSeleccionado === estudiante.estado) {
+  alert('El estudiante ya tiene ese estado.');
+  return;
+}
+
+const confirmarCambio = confirm(
+  '¿Confirmas cambiar el estado de ' +
+  estudiante.nombres + ' ' + estudiante.apellidos +
+  ' de "' + estudiante.estado +
+  '" a "' + estadoSeleccionado + '"?'
+);
+
+if (!confirmarCambio) {
+  return;
+}
+
+
+const { data: estudiantesActualizados, error: errorEstado } =
+  await client
+    .from('estudiantes')
+    .update({ estado: estadoSeleccionado })
+.eq('id', estudiante.id)
+.eq('seccion_id', estudiante.seccion_id)
+.eq('ciclo_escolar', cicloEscolarActual)
+.eq('estado', estudiante.estado)
+.select('id, estado');
+
+
+if (errorEstado) {
+  alert('No se pudo cambiar el estado: ' + errorEstado.message);
+  return;
+}
+
+if (!estudiantesActualizados || estudiantesActualizados.length !== 1) {
+  alert('No se pudo confirmar el cambio. Verifica los permisos o actualiza la lista.');
+  return;
+}
+
+alert('Estado actualizado correctamente a: ' + estadoSeleccionado);
+await cargarEstudiantesSeccion();
+
+
+});
+
+tarjeta.appendChild(botonEstado);
+
+if (currentRole === 'director') {
+  const botonCambiarSeccion = document.createElement('button');
+  botonCambiarSeccion.textContent = 'Cambiar sección';
+
+  
+botonCambiarSeccion.addEventListener('click', async () => {
+  const { data: seccionesDestino, error } = await client
+.from('secciones')
+.select('id, grado, seccion, ciclo_escolar')
+.eq('ciclo_escolar', cicloEscolarActual)
+.order('grado')
+.order('seccion');
+
+  if (error) {
+    alert('No se pudieron consultar las secciones: ' + error.message);
+    return;
+  }
+
+  const seccionActual = seccionesDestino.find(
+    (seccion) => seccion.id === estudiante.seccion_id
+  );
+
+  if (!seccionActual) {
+    alert('No se encontró la sección actual del estudiante.');
+    return;
+  }
+
+  const opciones = seccionesDestino.filter(
+    (seccion) =>
+      seccion.grado === seccionActual.grado &&
+      seccion.id !== estudiante.seccion_id
+  );
+
+  if (opciones.length === 0) {
+    alert('No hay otras secciones disponibles para este grado.');
+    return;
+  }
+
+  
+const listado = opciones.map(
+  (seccion, indice) =>
+    (indice + 1) + '. ' +
+    seccionActual.grado + 'º Básico - Sección ' + seccion.seccion
+).join('\n');
+
+const respuesta = prompt(
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nSelecciona la sección de destino:\n' + listado +
+  '\n\nEscribe el número de la opción:',
+  '1'
+);
+
+if (respuesta === null) return;
+
+const numeroOpcion = Number(respuesta.trim());
+
+if (!Number.isInteger(numeroOpcion) ||
+    numeroOpcion < 1 ||
+    numeroOpcion > opciones.length) {
+  alert('Opción no válida. Selecciona un número del listado.');
+  return;
+}
+
+const seccionSeleccionada = opciones[numeroOpcion - 1];
+
+
+const motivoIngresado = prompt(
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nDestino: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion +
+  '\n\nEscribe el motivo del traslado:'
+);
+
+if (motivoIngresado === null) return;
+
+const motivoTraslado = motivoIngresado.trim();
+
+if (motivoTraslado.length < 10) {
+  alert('El motivo debe contener al menos 10 caracteres.');
+  return;
+}
+
+
+const confirmarTraslado = confirm(
+  'CONFIRMAR CAMBIO DE SECCIÓN\n\n' +
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nOrigen: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionActual.seccion +
+  '\nDestino: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion +
+  '\nMotivo: ' + motivoTraslado +
+  '\n\n¿Confirmas los datos de este traslado?'
+);
+
+if (!confirmarTraslado) return;
+
+const { error: errorTraslado } = await client.rpc(
+  'trasladar_estudiante_seccion',
+  {
+    p_estudiante_id: estudiante.id,
+    p_seccion_destino_id: seccionSeleccionada.id,
+    p_motivo: motivoTraslado
+  }
+);
+
+if (errorTraslado) {
+  alert('No se pudo realizar el traslado: ' + errorTraslado.message);
+  return;
+}
+
+alert(
+  'Traslado realizado correctamente.\n\n' +
+  'Estudiante: ' + estudiante.nombres + ' ' + estudiante.apellidos +
+  '\nNueva sección: ' + seccionActual.grado + 'º Básico - Sección ' +
+  seccionSeleccionada.seccion
+);
+
+await cargarEstudiantesSeccion();
+
+});
+
+  tarjeta.appendChild(botonCambiarSeccion);
+
+const botonVerHistorial = document.createElement('button');
+botonVerHistorial.textContent = 'Ver historial';
+
+
+botonVerHistorial.addEventListener('click', async () => {
+  const { data: movimientos, error } = await client
+    .from('historial_cambios_seccion')
+    .select('id, seccion_origen_id, seccion_destino_id, ciclo_escolar, fecha_cambio, motivo, autorizado_por')
+    .eq('estudiante_id', estudiante.id)
+    .order('id', { ascending: false });
+
+  if (error) {
+    alert('No se pudo consultar el historial: ' + error.message);
+    return;
+  }
+
+  if (!movimientos || movimientos.length === 0) {
+    alert('Este estudiante no tiene cambios de sección registrados.');
+    return;
+  }
+
+const { data: seccionesHistorial, error: errorSecciones } = await client
+  .from('secciones')
+  .select('id, grado, seccion');
+
+if (errorSecciones) {
+  alert('No se pudieron consultar las secciones: ' + errorSecciones.message);
+  return;
+}
+
+const nombreSeccion = (id) => {
+  const seccion = seccionesHistorial.find(s => s.id === id);
+  return seccion
+    ? seccion.grado + 'º Básico - Sección ' + seccion.seccion
+    : 'Sección ID ' + id;
+};
+
+const { data: responsablesHistorial, error: errorResponsables } = await client
+  .from('perfiles')
+  .select('id, nombre_completo');
+
+if (errorResponsables) {
+  alert('No se pudieron consultar los responsables: ' +
+    errorResponsables.message);
+  return;
+}
+
+const nombreResponsable = (id) => {
+  const responsable = responsablesHistorial.find(p => p.id === id);
+  return responsable
+    ? responsable.nombre_completo
+    : 'Responsable no disponible';
+};
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return 'Fecha no registrada';
+
+  return new Date(fecha).toLocaleString('es-GT', {
+    timeZone: 'America/Guatemala',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
+  const detalle = movimientos.map((movimiento, indice) =>
+    (indice + 1) + '. Ciclo escolar: ' + movimiento.ciclo_escolar +
+'\nFecha del traslado: ' + formatearFecha(movimiento.fecha_cambio) +
+'\nSección de origen: ' + nombreSeccion(movimiento.seccion_origen_id) +
+  '\nSección de destino: ' + nombreSeccion(movimiento.seccion_destino_id) +
+'\nMotivo: ' + movimiento.motivo +
+'\nAutorizado por: ' + nombreResponsable(movimiento.autorizado_por)
+
+  ).join('\n\n');
+
+  alert(
+    'HISTORIAL DE MOVIMIENTOS\n\n' +
+    estudiante.nombres + ' ' + estudiante.apellidos +
+    '\n\n' + detalle
+  );
+});
+
+
+tarjeta.appendChild(botonVerHistorial);
+}
+
+  contenedor.appendChild(tarjeta);
+}
+
+}
+
+ // GUARDAR ESTUDIANTE
+async function guardarEstudiante() {
+  const codigo = document.getElementById('codigoEstudiante').value.trim();
+  const nombres = document.getElementById('nombresEstudiante').value.trim();
+  const apellidos = document.getElementById('apellidosEstudiante').value.trim();
+
+  const mensaje = document.getElementById('mensajeRegistroEstudiante');
+
+const seccionId = document.getElementById('seccionEstudiantes').value;
+
+if (!seccionId) {
+  mensaje.textContent = 'Selecciona una sección.';
+  return;
+}
+
+const { data: seccionValida, error: errorSeccion } = await client
+  .from('secciones')
+  .select('id')
+  .eq('id', seccionId)
+  .eq('ciclo_escolar', cicloEscolarActual)
+  .maybeSingle();
+
+if (errorSeccion || !seccionValida) {
+  mensaje.textContent =
+    'La sección seleccionada no pertenece al ciclo escolar actual.';
+  return;
+}
+
+const { data: cicloActivo, error: errorCiclo } = await client
+  .from('ciclos_escolares')
+  .select('estado')
+  .eq('anio', cicloEscolarActual)
+  .maybeSingle();
+
+if (errorCiclo || !cicloActivo || cicloActivo.estado !== 'activo') {
+  mensaje.textContent =
+    'No se pueden registrar estudiantes: el ciclo escolar no está activo.';
+  return;
+}
+
+  if (!codigo || !nombres || !apellidos) {
+    mensaje.textContent = 'Completa todos los campos.';
+    return;
+  }
+
+const { data: { user }, error: errorUsuario } =
+  await client.auth.getUser();
+
+if (errorUsuario || !user) {
+  mensaje.textContent = 'Debes iniciar sesión para registrar estudiantes.';
+  return;
+}
+let autorizado = false;
+
+if (currentRole === 'director') {
+  autorizado = true;
+}
+
+if (currentRole === 'docente') {
+  const { data: permiso, error: errorPermiso } = await client
+    .from('permisos_estudiantes')
+    .select('puede_registrar')
+    .eq('docente_id', user.id)
+    .eq('seccion_id', seccionId)
+    .eq('ciclo_escolar', cicloEscolarActual)
+    .maybeSingle();
+
+  if (!errorPermiso && permiso?.puede_registrar === true) {
+    autorizado = true;
+  }
+}
+
+if (!autorizado) {
+  mensaje.textContent =
+    'No tienes autorización para registrar estudiantes en esta sección.';
+  return;
+}
+
+const { error: errorRegistro } = await client
+  .from('estudiantes')
+  .insert({
+    codigo_personal: codigo,
+    nombres: nombres,
+    apellidos: apellidos,
+    seccion_id: seccionId,
+    ciclo_escolar: cicloEscolarActual,
+    estado: 'inscrito'
+  });
+
+if (errorRegistro) {
+  mensaje.textContent =
+    'Error al registrar estudiante: ' + errorRegistro.message;
+  return;
+}
+
+mensaje.textContent = 'Estudiante registrado correctamente.';
+
+document.getElementById('codigoEstudiante').value = '';
+document.getElementById('nombresEstudiante').value = '';
+document.getElementById('apellidosEstudiante').value = '';
+
+await cargarEstudiantesSeccion();
+}
+
+document.getElementById('guardarEstudiante')
+  .addEventListener('click', guardarEstudiante);
+
+    // CARGAR DOCENTES
+    async function cargarDocentes() {
+      const selector =
+        document.getElementById('docenteAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar docente</option>';
+
+      const { data, error } = await client
+        .from('perfiles')
+        .select('id, nombre_completo, nombre_usuario')
+        .eq('rol', 'docente')
+        .eq('activo', true)
+        .order('nombre_usuario');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar los docentes: ' +
+          error.message
+        );
+      }
+
+      for (const docente of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = docente.id;
+        opcion.textContent =
+          docente.nombre_completo ||
+          docente.nombre_usuario;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // CARGAR CURSOS
+    async function cargarCursos() {
+      const selector =
+        document.getElementById('cursoAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar curso</option>';
+
+      const { data, error } = await client
+        .from('cursos')
+        .select('id, nombre')
+        .eq('activo', true)
+        .order('nombre');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar los cursos: ' +
+          error.message
+        );
+      }
+
+      for (const curso of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = curso.id;
+        opcion.textContent = curso.nombre;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // CARGAR GRADOS Y SECCIONES
+    async function cargarSecciones() {
+      const selector =
+        document.getElementById('seccionAsignacion');
+
+      selector.innerHTML =
+        '<option value="">Seleccionar sección</option>';
+
+      const { data, error } = await client
+.from('secciones')
+.select('id, grado, seccion')
+.eq('ciclo_escolar', cicloEscolarActual)
+.order('grado')
+.order('seccion');
+
+      if (error) {
+        throw new Error(
+          'No se pudieron cargar las secciones: ' +
+          error.message
+        );
+      }
+
+      for (const seccion of data || []) {
+        const opcion = document.createElement('option');
+
+        opcion.value = seccion.id;
+
+        opcion.textContent =
+          seccion.grado +
+          'º Básico - Sección ' +
+          seccion.seccion;
+
+        selector.appendChild(opcion);
+      }
+    }
+
+    // ABRIR O CERRAR ASIGNACIONES
+    document.getElementById('abrirAsignaciones')
+      .addEventListener('click', async () => {
+
+        if (currentRole !== 'director') {
+          showMessage(
+            'No tienes autorización para administrar asignaciones.'
+          );
+          return;
+        }
+
+        const estabaOculto =
+          moduloAsignaciones.classList.contains('hidden');
+
+        if (!estabaOculto) {
+          moduloAsignaciones.classList.add('hidden');
+          showMessage('');
+          return;
+        }
+
+        moduloAsignaciones.classList.remove('hidden');
+
+        showMessage('Cargando información académica...');
+
+        try {
+          await cargarDocentes();
+          await cargarCursos();
+          await cargarSecciones();
+
+          showMessage(
+            'Información académica cargada correctamente.'
+          );
+        } catch (error) {
+          console.error(
+            'Error al cargar asignaciones:',
+            error
+          );
+
+          showMessage(error.message);
+        }
+      });
+
+  // DETECTAR SELECCIÓN DE CICLO ESCOLAR
+  document.getElementById('selectorCicloEscolar')
+    .addEventListener('change', (evento) => {
+
+      if (currentRole !== 'director') {
+        return;
+      }
+
+      const anioSeleccionado = Number(evento.target.value);
+
+      if (!anioSeleccionado) {
+        return;
+      }
+
+      
+const mensajeCiclos =
+  document.getElementById('mensajeCiclosEscolares');
+
+mensajeCiclos.textContent =
+  'Ciclo seleccionado para consulta: ' +
+  anioSeleccionado +
+  '. El ciclo de trabajo todavía no ha cambiado.';
+
+    });
+
+  // ABRIR O CERRAR CICLOS ESCOLARES
+abrirCiclosEscolares.addEventListener('click', async () => {
+
+    if (currentRole !== 'director') {
+      showMessage(
+        'No tienes autorización para administrar ciclos escolares.'
+      );
+      return;
+    }
+
+    const estabaOculto =
+      moduloCiclosEscolares.classList.contains('hidden');
+
+    if (!estabaOculto) {
+      moduloCiclosEscolares.classList.add('hidden');
+      showMessage('');
+      return;
+    }
+
+    moduloAsignaciones.classList.add('hidden');
+    moduloCiclosEscolares.classList.remove('hidden');
+
+    await cargarCiclosEscolares();
+
+    showMessage('');
+  });
+
+    // GUARDAR ASIGNACIÓN DOCENTE
+    document.getElementById('guardarAsignacion')
+      .addEventListener('click', async () => {
+        if (!client || currentRole !== 'director') {
+          showMessage('Solo Dirección puede guardar asignaciones.');
+          return;
+        }
+
+        const docenteId =
+          document.getElementById('docenteAsignacion').value;
+        const cursoId =
+          document.getElementById('cursoAsignacion').value;
+        const seccionId =
+          document.getElementById('seccionAsignacion').value;
+
+        if (!docenteId || !cursoId || !seccionId) {
+          showMessage('Selecciona docente, curso y sección.');
+          return;
+        }
+
+        const boton =
+          document.getElementById('guardarAsignacion');
+
+        boton.disabled = true;
+        showMessage('Guardando asignación...');
+
+        try {
+          const { data: existente, error: consultaError } =
+            await client
+              .from('asignaciones_docentes')
+              .select('id')
+              .eq('docente_id', docenteId)
+              .eq('curso_id', Number(cursoId))
+              .eq('seccion_id', Number(seccionId))
+              .eq('ciclo_escolar', cicloEscolarActual)
+
+              .limit(1);
+
+          if (consultaError) throw consultaError;
+
+          if (existente && existente.length > 0) {
+            showMessage('Esta asignación ya está registrada.');
+            return;
+          }
+
+          const { error: guardarError } =
+            await client
+              .from('asignaciones_docentes')
+              .insert({
+                docente_id: docenteId,
+                curso_id: Number(cursoId),
+                seccion_id: Number(seccionId),
+                ciclo_escolar: cicloEscolarActual
+
+              });
+
+          if (guardarError) throw guardarError;
+
+          showMessage('Asignación guardada correctamente.');
+
+        } catch (error) {
+          console.error('Error al guardar asignación:', error);
+          showMessage(
+            'No se pudo guardar la asignación: ' +
+            error.message
+          );
+        } finally {
+          boton.disabled = false;
+        }
+      });
+
+    // INICIAR SESIÓN
+    document.getElementById('loginForm')
+      .addEventListener('submit', async (event) => {
+
+        event.preventDefault();
+
+        if (!client) {
+          showMessage(
+            'Conexión no disponible. Recarga la página.'
+          );
+          return;
+        }
+
+        loginBtn.disabled = true;
+        showMessage('Verificando credenciales...');
+
+        try {
+          const email =
+            document.getElementById('email').value.trim();
+
+          const password =
+            document.getElementById('password').value;
+
+          const { error } =
+            await client.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if (error) {
+            showMessage(
+              'No se pudo iniciar sesión. Verifica el correo y la contraseña.'
+            );
+            return;
+          }
+
+          await loadProfile();
+
+        } catch (error) {
+          console.error('Error de inicio de sesión:', error);
+
+          showMessage(
+            'Ocurrió un problema de conexión. Intenta nuevamente.'
+          );
+        } finally {
+          loginBtn.disabled = false;
+        }
+      });
+
+    // CERRAR SESIÓN
+    document.getElementById('salir')
+      .addEventListener('click', async () => {
+
+        try {
+          if (client) {
+            await client.auth.signOut();
+          }
+
+          showLogin();
+          showMessage('Sesión cerrada.');
+
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+
+          showMessage(
+            'No se pudo cerrar la sesión. Intenta nuevamente.'
+          );
+        }
+      });
+
+
+    // PASO 438.3.4.324 - Documento imprimible a partir de la RPC protegida.
+    const controlSeccion = document.getElementById('controlSeccion');
+    const controlBimestre = document.getElementById('controlBimestre');
+    const controlEstado = document.getElementById('controlEntregaEstado');
+    const controlBoton = document.getElementById('generarControlEntrega');
+
+    function controlEscapar(valor) {
+      return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;',
+        '"': '&quot;', "'": '&#39;'
+      }[caracter]));
+    }
+
+    async function cargarSeccionesControlEntrega() {
+      if (currentRole !== 'director') return;
+      controlSeccion.innerHTML = '<option value="">Selecciona una sección</option>';
+      const { data, error } = await client.from('secciones')
+        .select('id,grado,seccion')
+        .eq('ciclo_escolar', cicloEscolarActual)
+        .order('grado').order('seccion');
+      if (error) {
+        controlEstado.textContent = 'No se pudieron cargar las secciones: ' + error.message;
+        return;
+      }
+      for (const sec of data || []) {
+        const opcion = document.createElement('option');
+        opcion.value = sec.id;
+        opcion.textContent = sec.grado + '.º básico — Sección ' + sec.seccion;
+        controlSeccion.appendChild(opcion);
+      }
+    }
+
+    function construirControlEntrega(datos) {
+      const primero = datos[0];
+      const filas = datos.map(e => `<tr>
+        <td class="numero">${controlEscapar(e.numero)}</td>
+        <td>${controlEscapar(e.nombre_estudiante)}</td>
+        <td></td><td></td><td></td>
+      </tr>`).join('');
+      const romanos = ['I','II','III','IV'];
+      const titulo = controlEscapar(primero.nombre_institucion);
+      const ciclo = controlEscapar(primero.ciclo_escolar);
+      const grado = controlEscapar(primero.grado);
+      const seccion = controlEscapar(primero.seccion);
+      const bimestre = romanos[Number(primero.bimestre)-1] || '';
+      const generado = new Date(primero.fecha_generacion || Date.now())
+        .toLocaleString('es-GT', {timeZone:'America/Guatemala'});
+      return `<!doctype html><html lang="es"><head><meta charset="utf-8">
+      <title>Control entrega boletas ${grado}${seccion} - ${bimestre}</title>
+      <style>
+        @page { size: legal landscape; margin: 13mm 15mm; }
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; color:#182e46; margin:0; font-size:10pt; }
+        header { text-align:center; border-bottom:2px solid #183b5c; padding-bottom:8px; }
+        h1 { font-size:15pt; margin:0 0 5px; text-transform:uppercase; }
+        h2 { font-size:12pt; margin:12px 0 7px; text-align:center; }
+        .datos { display:flex; justify-content:space-between; gap:15px; margin:10px 0; font-weight:bold; }
+        table { border-collapse:collapse; width:100%; table-layout:fixed; }
+        th,td { border:1px solid #43576c; padding:7px 6px; overflow-wrap:anywhere; }
+        th { background:#e8eef4; text-align:center; }
+        td { height:30px; color:#111; }
+        .numero { text-align:center; }
+        thead { display:table-header-group; }
+        tr { break-inside:avoid; page-break-inside:avoid; }
+        .firmas { display:flex; justify-content:space-around; gap:50px; margin-top:45px; text-align:center; }
+        .firmas > div { border-top:1px solid #24394d; padding-top:8px; width:35%; }
+        footer { font-size:8pt; color:#536474; margin-top:15px; }
+        .acciones { margin-bottom:15px; text-align:center; }
+        .acciones button { padding:10px 20px; cursor:pointer; }
+        @media print { .acciones {display:none;} }
+      </style></head><body>
+      <div class="acciones"><button onclick="window.print()">Imprimir / Guardar como PDF</button></div>
+      <header><h1>${titulo}</h1><div>Ciclo escolar ${ciclo}</div></header>
+      <h2>CONTROL COLECTIVO DE ENTREGA DE BOLETAS</h2>
+      <div class="datos"><span>Grado: ${grado}.º básico &nbsp; Sección: ${seccion}</span>
+      <span>Bimestre: ${bimestre}</span></div>
+      <table><colgroup><col style="width:5%"><col style="width:35%">
+      <col style="width:27%"><col style="width:20%"><col style="width:13%"></colgroup>
+      <thead><tr><th>No.</th><th>Nombre del estudiante</th>
+      <th>Nombre de quien recibe</th><th>Firma</th><th>Fecha</th></tr></thead>
+      <tbody>${filas}</tbody></table>
+      <div class="firmas"><div>Docente guía</div><div>Dirección / Sello</div></div>
+      <footer>Generado: ${controlEscapar(generado)} (hora de Guatemala).
+      Documento para registro físico de entrega; los espacios de recibido se completan a mano.</footer>
+      </body></html>`;
+    }
+
+    controlBoton.addEventListener('click', async () => {
+      if (currentRole !== 'director') {
+        controlEstado.textContent = 'Solo Dirección puede utilizar este módulo.';
+        return;
+      }
+      const seccionId = Number(controlSeccion.value);
+      if (!seccionId) {
+        controlEstado.textContent = 'Selecciona primero un grado y sección.';
+        return;
+      }
+      // Abrir en el gesto del usuario para evitar bloqueos de ventanas emergentes.
+      const ventana = window.open('', '_blank');
+      if (!ventana) {
+        controlEstado.textContent = 'Permite las ventanas emergentes para imprimir el documento.';
+        return;
+      }
+      ventana.document.write('<p style="font-family:Arial">Preparando documento…</p>');
+      controlBoton.disabled = true;
+      controlEstado.textContent = 'Consultando nómina autorizada…';
+      try {
+        const { data: ciclos, error: errorCiclos } = await client
+          .from('ciclos_escolares').select('id').eq('anio', cicloEscolarActual);
+        if (errorCiclos) throw errorCiclos;
+        if (!ciclos || ciclos.length !== 1) {
+          throw new Error('No se encontró un ciclo escolar único para el año activo.');
+        }
+        const { data, error } = await client.rpc(
+          'generar_datos_control_entrega_boletas', {
+            p_seccion_id: seccionId,
+            p_ciclo_escolar_id: ciclos[0].id,
+            p_bimestre: Number(controlBimestre.value),
+            p_incluir_retirados: false
+          }
+        );
+        if (error) throw error;
+        if (!data || !data.length) {
+          ventana.close();
+          controlEstado.textContent = 'La sección no tiene estudiantes activos o no hay datos institucionales.';
+          return;
+        }
+        ventana.document.open();
+        ventana.document.write(construirControlEntrega(data));
+        ventana.document.close();
+        controlEstado.textContent = 'Documento preparado con ' + data.length +
+          ' estudiante(s). En la nueva pestaña, selecciona Imprimir / Guardar como PDF.';
+      } catch (error) {
+        ventana.close();
+        controlEstado.textContent = 'No se pudo preparar el documento: ' + error.message;
+      } finally {
+        controlBoton.disabled = false;
+      }
+    });
+
+    // INICIALIZAR APLICACIÓN
+    async function initialize() {
+      if (!window.supabase) {
+        showMessage(
+          'No se pudo cargar Supabase. Revisa tu conexión a Internet.'
+        );
+        return;
+      }
+
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLIC_KEY
+      );
+
+      try {
+        await loadProfile();
+      } catch (error) {
+        console.error('Error al iniciar:', error);
+
+        showLogin();
+
+        showMessage(
+          'No fue posible verificar la sesión. Intenta nuevamente.'
+        );
+      }
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
